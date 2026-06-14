@@ -33,7 +33,7 @@ export default function Login() {
   });
 
   useEffect(() => {
-    if (user) setLocation("/dashboard");
+    if (user) setLocation("/pos");
   }, [user, setLocation]);
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
@@ -41,7 +41,7 @@ export default function Login() {
       const response = await loginMutation.mutateAsync({ data: values });
       login(response.token, response.user);
       toast({ title: "Login successful", description: `Welcome to ${storeName}` });
-      setLocation("/dashboard");
+      setLocation("/pos");
     } catch (error: any) {
       toast({
         variant: "destructive",

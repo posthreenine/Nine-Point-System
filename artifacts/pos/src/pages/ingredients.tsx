@@ -74,7 +74,7 @@ export default function IngredientsPage() {
       }
       queryClient.invalidateQueries({ queryKey: getGetIngredientsQueryKey() });
     } catch (err: any) {
-      toast({ variant: "destructive", title: "Error", description: err?.response?.data?.error ?? "Something went wrong" });
+      toast({ variant: "destructive", title: "Error", description: err?.data?.error ?? err?.message ?? "Something went wrong" });
     }
   }
 
@@ -86,7 +86,7 @@ export default function IngredientsPage() {
       queryClient.invalidateQueries({ queryKey: getGetIngredientsQueryKey() });
       setDeletingItem(null);
     } catch (err: any) {
-      toast({ variant: "destructive", title: "Error", description: err?.response?.data?.error ?? "Something went wrong" });
+      toast({ variant: "destructive", title: "Error", description: err?.data?.error ?? err?.message ?? "Something went wrong" });
     }
   }
 

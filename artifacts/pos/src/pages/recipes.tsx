@@ -74,7 +74,7 @@ export default function RecipesPage() {
       queryClient.invalidateQueries({ queryKey: getGetRecipesQueryKey() });
       setEditingRecipe(null);
     } catch (err: any) {
-      toast({ variant: "destructive", title: "Error", description: err?.response?.data?.error ?? "Something went wrong" });
+      toast({ variant: "destructive", title: "Error", description: err?.data?.error ?? err?.message ?? "Something went wrong" });
     }
   }
 

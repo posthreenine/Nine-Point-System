@@ -67,7 +67,7 @@ export default function CategoriesPage() {
       }
       queryClient.invalidateQueries({ queryKey: getGetCategoriesQueryKey() });
     } catch (err: any) {
-      toast({ variant: "destructive", title: "Error", description: err?.response?.data?.error ?? "Something went wrong" });
+      toast({ variant: "destructive", title: "Error", description: err?.data?.error ?? err?.message ?? "Something went wrong" });
     }
   }
 
@@ -79,7 +79,7 @@ export default function CategoriesPage() {
       queryClient.invalidateQueries({ queryKey: getGetCategoriesQueryKey() });
       setDeletingItem(null);
     } catch (err: any) {
-      toast({ variant: "destructive", title: "Error", description: err?.response?.data?.error ?? "Something went wrong" });
+      toast({ variant: "destructive", title: "Error", description: err?.data?.error ?? err?.message ?? "Something went wrong" });
     }
   }
 

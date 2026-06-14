@@ -67,7 +67,7 @@ export default function StockMovementsPage() {
       setIsOpen(false);
       form.reset();
     } catch (err: any) {
-      toast({ variant: "destructive", title: "Error", description: err?.response?.data?.error ?? "Something went wrong" });
+      toast({ variant: "destructive", title: "Error", description: err?.data?.error ?? err?.message ?? "Something went wrong" });
     }
   }
 
