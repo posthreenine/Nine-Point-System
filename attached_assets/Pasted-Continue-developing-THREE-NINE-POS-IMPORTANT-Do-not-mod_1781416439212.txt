@@ -1,0 +1,164 @@
+Continue developing THREE NINE POS.
+
+IMPORTANT:
+
+Do not modify or break existing modules.
+
+Create a complete Business Management and Reporting System.
+
+MODULES
+
+1. Cashier Shift Management
+2. Cash Opening
+3. Cash Closing
+4. Daily Sales Report
+5. Weekly Sales Report
+6. Monthly Sales Report
+7. Product Sales Report
+8. Profit Report
+9. Dashboard Analytics
+10. Export Excel
+11. Export PDF
+
+DATABASE TABLES
+
+cashier_shifts
+cash_closings
+
+SHIFT MANAGEMENT
+
+Features:
+
+* Open Shift
+* Close Shift
+* Shift History
+
+Fields:
+
+* Cashier
+* Opening Cash
+* Closing Cash
+* Expected Cash
+* Difference
+* Notes
+
+DASHBOARD ANALYTICS
+
+Display:
+
+* Today's Revenue
+* Today's Profit
+* Monthly Revenue
+* Monthly Profit
+* Transactions Today
+* Best Selling Products
+* Top Categories
+* Active Cashiers
+
+REPORTS
+
+Daily Sales Report
+
+Show:
+
+* Revenue
+* Transactions
+* Profit
+* Average Transaction
+
+Weekly Report
+
+Show:
+
+* Revenue
+* Transactions
+* Profit
+
+Monthly Report
+
+Show:
+
+* Revenue
+* Transactions
+* Profit
+
+PRODUCT REPORT
+
+Show:
+
+* Best Selling Products
+* Quantity Sold
+* Revenue
+* Profit
+
+PROFIT REPORT
+
+Calculate from:
+
+Selling Price - HPP
+
+Display:
+
+* Gross Profit
+* Net Profit
+* Margin %
+
+FILTERS
+
+* Today
+* Yesterday
+* This Week
+* This Month
+* Custom Date Range
+
+EXPORT
+
+Excel (.xlsx)
+
+PDF
+
+ROLE PERMISSIONS
+
+Owner:
+Full Access
+
+Manager:
+View Reports
+
+Cashier:
+Own Shift Only
+
+Kitchen:
+No Access
+
+CHARTS
+
+Create:
+
+* Revenue Chart
+* Profit Chart
+* Sales Trend Chart
+* Product Performance Chart
+
+UI
+
+Professional management dashboard.
+
+Responsive on:
+
+* Mobile
+* Tablet
+* Laptop
+* Desktop
+
+TESTING
+
+Verify all calculations match transaction data.
+
+Verify exports work.
+
+Verify charts load correctly.
+
+Fix all build errors automatically before finishing.
+
+Generate complete backend, frontend, database schema, APIs, reports, charts, PDF export, Excel export, and responsive UI.

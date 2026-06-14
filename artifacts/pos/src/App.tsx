@@ -25,6 +25,13 @@ import Tables from "@/pages/tables";
 import Transactions from "@/pages/transactions";
 import QrisSettings from "@/pages/qris-settings";
 
+import Shifts from "@/pages/shifts";
+import DailyReport from "@/pages/reports/daily";
+import WeeklyReport from "@/pages/reports/weekly";
+import MonthlyReport from "@/pages/reports/monthly";
+import ProductReport from "@/pages/reports/products";
+import ProfitReport from "@/pages/reports/profit";
+
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ component: Component }: { component: React.ComponentType<any> }) => {
@@ -63,23 +70,26 @@ function Router() {
       <Route path="/admin/store-settings"><ProtectedRoute component={StoreSettings} /></Route>
       <Route path="/admin/qris-settings"><ProtectedRoute component={QrisSettings} /></Route>
 
-      {/* POS */}
       <Route path="/pos"><ProtectedRoute component={POS} /></Route>
       <Route path="/tables"><ProtectedRoute component={Tables} /></Route>
       <Route path="/transactions"><ProtectedRoute component={Transactions} /></Route>
 
-      {/* Products module */}
       <Route path="/products/categories"><ProtectedRoute component={Categories} /></Route>
       <Route path="/products/ingredients"><ProtectedRoute component={Ingredients} /></Route>
       <Route path="/products/recipes"><ProtectedRoute component={Recipes} /></Route>
       <Route path="/products"><ProtectedRoute component={Products} /></Route>
 
-      {/* Inventory */}
       <Route path="/inventory/stock"><ProtectedRoute component={Ingredients} /></Route>
       <Route path="/inventory/movements"><ProtectedRoute component={StockMovements} /></Route>
 
-      {/* Reports */}
-      <Route path="/reports/profit"><ProtectedRoute component={ProfitAnalysis} /></Route>
+      <Route path="/shifts"><ProtectedRoute component={Shifts} /></Route>
+
+      <Route path="/reports/daily"><ProtectedRoute component={DailyReport} /></Route>
+      <Route path="/reports/weekly"><ProtectedRoute component={WeeklyReport} /></Route>
+      <Route path="/reports/monthly"><ProtectedRoute component={MonthlyReport} /></Route>
+      <Route path="/reports/products"><ProtectedRoute component={ProductReport} /></Route>
+      <Route path="/reports/profit"><ProtectedRoute component={ProfitReport} /></Route>
+      <Route path="/reports/profit-analysis"><ProtectedRoute component={ProfitAnalysis} /></Route>
 
       <Route component={NotFound} />
     </Switch>

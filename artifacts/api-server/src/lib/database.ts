@@ -182,6 +182,19 @@ function initDatabase(): void {
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS cashier_shifts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      cashier_id INTEGER NOT NULL REFERENCES users(id),
+      opening_cash REAL NOT NULL DEFAULT 0,
+      closing_cash REAL,
+      expected_cash REAL,
+      difference REAL,
+      notes TEXT,
+      status TEXT NOT NULL DEFAULT 'open',
+      started_at TEXT NOT NULL DEFAULT (datetime('now')),
+      closed_at TEXT
+    );
   `);
 
   seedRoles();

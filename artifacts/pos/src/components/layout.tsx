@@ -8,6 +8,7 @@ import {
   Settings, ChevronDown, ChevronRight, Store, Layers,
   Package, FlaskConical, Warehouse, ClipboardList, ChefHat,
   BarChart3, TrendingUp, ShoppingCart, Table2, Receipt, QrCode,
+  Clock, CalendarDays, Calendar, ShoppingBag, PieChart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -35,6 +36,7 @@ export function Layout({ children }: LayoutProps) {
     reports: location.startsWith("/reports"),
     admin: location.startsWith("/admin"),
     pos: location.startsWith("/pos") || location.startsWith("/tables") || location.startsWith("/transactions"),
+    shifts: location.startsWith("/shifts"),
   }));
 
   function toggleGroup(key: string) {
@@ -69,7 +71,12 @@ export function Layout({ children }: LayoutProps) {
   ];
 
   const reportLinks = [
-    { href: "/reports/profit", label: "Profit Analysis", icon: TrendingUp },
+    { href: "/reports/daily", label: "Daily Report", icon: CalendarDays },
+    { href: "/reports/weekly", label: "Weekly Report", icon: Calendar },
+    { href: "/reports/monthly", label: "Monthly Report", icon: BarChart3 },
+    { href: "/reports/products", label: "Product Report", icon: ShoppingBag },
+    { href: "/reports/profit", label: "Profit Report", icon: TrendingUp },
+    { href: "/reports/profit-analysis", label: "HPP Analysis", icon: PieChart },
   ];
 
   const posLinks = [
@@ -120,10 +127,8 @@ export function Layout({ children }: LayoutProps) {
 
   const NavLinks = ({ onNavigate }: { onNavigate?: () => void }) => (
     <div className="space-y-0.5">
-      {/* POS group — all authenticated users */}
       <CollapsibleGroup groupKey="pos" icon={ShoppingCart} label="POS" links={posLinks} onNavigate={onNavigate} />
 
-      {/* Dashboard — managers and owners */}
       {canManage && (
         <Link href="/dashboard" className={navLinkClass("/dashboard", true)} onClick={onNavigate}>
           <LayoutDashboard className="h-4 w-4 shrink-0" />
@@ -131,7 +136,14 @@ export function Layout({ children }: LayoutProps) {
         </Link>
       )}
 
-      {/* Staff management — owners only */}
+      {/* Shift Management — all non-kitchen */}
+      {!isKitchen && (
+        <Link href="/shifts" className={navLinkClass("/shifts", true)} onClick={onNavigate}>
+          <Clock className="h-4 w-4 shrink-0" />
+          Shift Management
+        </Link>
+      )}
+
       {isOwner && (
         <>
           <Link href="/users" className={navLinkClass("/users", true)} onClick={onNavigate}>
@@ -150,22 +162,18 @@ export function Layout({ children }: LayoutProps) {
         Change Password
       </Link>
 
-      {/* Products group */}
       {!isKitchen && (
         <CollapsibleGroup groupKey="products" icon={Package} label="Products" links={productLinks} onNavigate={onNavigate} />
       )}
 
-      {/* Inventory — Owner/Manager */}
       {canManage && (
         <CollapsibleGroup groupKey="inventory" icon={Warehouse} label="Inventory" links={inventoryLinks} onNavigate={onNavigate} />
       )}
 
-      {/* Reports — Owner/Manager */}
       {canManage && (
         <CollapsibleGroup groupKey="reports" icon={BarChart3} label="Reports" links={reportLinks} onNavigate={onNavigate} />
       )}
 
-      {/* Admin — Owner only */}
       {isOwner && (
         <CollapsibleGroup groupKey="admin" icon={Settings} label="Administration" links={adminLinks} onNavigate={onNavigate} />
       )}
@@ -197,7 +205,6 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden">
-      {/* Desktop Sidebar */}
       <aside className="hidden lg:flex flex-col w-64 bg-sidebar border-r border-sidebar-border h-full">
         <SidebarHeader />
         <nav className="flex-1 px-4 py-4 overflow-y-auto">
@@ -215,9 +222,7 @@ export function Layout({ children }: LayoutProps) {
         </div>
       </aside>
 
-      {/* Main Content */}
       <div className="flex flex-col flex-1 h-full overflow-hidden">
-        {/* Header */}
         <header className="h-14 flex items-center justify-between px-4 border-b bg-card shrink-0">
           <div className="flex items-center gap-3">
             <div className="lg:hidden">
@@ -263,7 +268,6 @@ export function Layout({ children }: LayoutProps) {
           </div>
         </header>
 
-        {/* Page Content */}
         <main className={cn(
           "flex-1 overflow-hidden bg-background",
           isPOSPage ? "" : "overflow-y-auto p-5 md:p-8"
