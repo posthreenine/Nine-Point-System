@@ -25,6 +25,7 @@ import Tables from "@/pages/tables";
 import Transactions from "@/pages/transactions";
 import QrisSettings from "@/pages/qris-settings";
 import PrinterManagement from "@/pages/printer-management";
+import Maintenance from "@/pages/maintenance";
 
 import Shifts from "@/pages/shifts";
 import DailyReport from "@/pages/reports/daily";
@@ -71,6 +72,7 @@ function Router() {
       <Route path="/admin/store-settings"><ProtectedRoute component={StoreSettings} /></Route>
       <Route path="/admin/qris-settings"><ProtectedRoute component={QrisSettings} /></Route>
       <Route path="/admin/printer-management"><ProtectedRoute component={PrinterManagement} /></Route>
+      <Route path="/admin/maintenance"><ProtectedRoute component={Maintenance} /></Route>
 
       <Route path="/pos"><ProtectedRoute component={POS} /></Route>
       <Route path="/tables"><ProtectedRoute component={Tables} /></Route>

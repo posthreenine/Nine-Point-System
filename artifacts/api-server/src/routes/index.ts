@@ -17,6 +17,7 @@ import transactionsRouter from "./transactions";
 import qrisSettingsRouter from "./qris-settings";
 import printerSettingsRouter from "./printer-settings";
 import printLogsRouter from "./print-logs";
+import maintenanceRouter from "./maintenance";
 
 const router: IRouter = Router();
 
@@ -38,5 +39,6 @@ router.use(transactionsRouter);
 router.use(qrisSettingsRouter);
 router.use(printerSettingsRouter);
 router.use(printLogsRouter);
+router.use(maintenanceRouter);
 
 export default router;
