@@ -1,36 +1,65 @@
-# [Project name]
+# THREE NINE POS
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A complete Point of Sale system foundation with user management, role management, and JWT authentication.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080)
+- `pnpm --filter @workspace/pos run dev` — run the frontend (port 24730)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+
+## Default Login
+
+- **Username:** `admin`
+- **Password:** `admin123`
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
+- Frontend: React + Vite + Tailwind CSS + wouter
 - API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- DB: SQLite (better-sqlite3) — stored at `artifacts/api-server/data/pos.db`
+- Auth: JWT (jsonwebtoken) + bcrypt
+- Validation: Zod, generated from OpenAPI spec
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `lib/api-spec/openapi.yaml` — OpenAPI contract (source of truth)
+- `lib/api-client-react/src/generated/` — generated React Query hooks
+- `lib/api-zod/src/generated/` — generated Zod schemas (used server-side)
+- `artifacts/api-server/src/lib/database.ts` — SQLite setup + seeding
+- `artifacts/api-server/src/lib/jwt.ts` — JWT sign/verify
+- `artifacts/api-server/src/middlewares/auth.ts` — requireAuth middleware
+- `artifacts/api-server/src/routes/` — auth, users, roles, dashboard routes
+- `artifacts/pos/src/` — React frontend
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- SQLite with better-sqlite3 for zero-config persistence; DB file lives in `artifacts/api-server/data/`
+- OpenAPI-first: all types generated from `lib/api-spec/openapi.yaml`, never handwritten
+- JWT stored in localStorage under key `pos_token`; custom-fetch attaches Bearer header
+- System roles (Owner, Manager, Cashier, Kitchen) are seeded and protected from deletion
+- Express 5 with async route handlers; all inputs validated with generated Zod schemas
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- **Login** — branded full-page login with JWT session
+- **Dashboard** — stats overview: total/active users, roles, users-by-role breakdown
+- **Users** — full CRUD: create, edit, delete, reset password; role badge + active/inactive status
+- **Roles** — create/edit/delete custom roles; system roles are protected
+- **Change Password** — secure self-service password change
+- **Responsive** — collapsible sidebar for mobile/tablet, full sidebar on desktop
+
+## Roles
+
+| Role    | Description                                      |
+|---------|--------------------------------------------------|
+| Owner   | Full access to all features and settings         |
+| Manager | Manage staff, view reports, configure operations |
+| Cashier | Process transactions and handle customer orders  |
+| Kitchen | View and update kitchen orders                   |
 
 ## User preferences
 
@@ -38,7 +67,9 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Run `pnpm approve-builds` if better-sqlite3 native build is blocked after adding a new dev
+- JWT secret is hardcoded for dev; set `JWT_SECRET` env var in production
+- SQLite DB is not provisioned via Drizzle — it's initialized directly in `database.ts`
 
 ## Pointers
 
