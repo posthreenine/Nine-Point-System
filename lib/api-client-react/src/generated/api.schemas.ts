@@ -103,11 +103,23 @@ export interface RoleCount {
   count: number;
 }
 
+export interface BestSellingProduct {
+  productId: number;
+  productName: string;
+  totalSold: number;
+  totalRevenue: number;
+}
+
 export interface DashboardStats {
   totalUsers: number;
   activeUsers: number;
   totalRoles: number;
   usersByRole: RoleCount[];
+  todaySales: number;
+  todayTransactions: number;
+  totalProducts: number;
+  openTables: number;
+  bestSellingProducts: BestSellingProduct[];
 }
 
 export interface StoreSettings {
@@ -135,6 +147,208 @@ export interface StoreSettings {
   receiptFooter?: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export type RestaurantTableStatus = typeof RestaurantTableStatus[keyof typeof RestaurantTableStatus];
+
+
+export const RestaurantTableStatus = {
+  available: 'available',
+  occupied: 'occupied',
+  reserved: 'reserved',
+} as const;
+
+export interface RestaurantTable {
+  id: number;
+  tableNumber: number;
+  name: string;
+  capacity: number;
+  status: RestaurantTableStatus;
+  /** @nullable */
+  currentTransactionId?: number | null;
+  /** @nullable */
+  currentInvoiceNumber?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type UpdateTableInputStatus = typeof UpdateTableInputStatus[keyof typeof UpdateTableInputStatus];
+
+
+export const UpdateTableInputStatus = {
+  available: 'available',
+  occupied: 'occupied',
+  reserved: 'reserved',
+} as const;
+
+export interface UpdateTableInput {
+  name?: string;
+  capacity?: number;
+  status?: UpdateTableInputStatus;
+}
+
+export interface TransactionItem {
+  id: number;
+  productId: number;
+  productName: string;
+  productCode: string;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+  /** @nullable */
+  notes?: string | null;
+}
+
+export interface Payment {
+  id: number;
+  paymentMethod: string;
+  amountPaid: number;
+  changeAmount: number;
+  status: string;
+  /** @nullable */
+  reference?: string | null;
+  createdAt: string;
+}
+
+export type TransactionOrderType = typeof TransactionOrderType[keyof typeof TransactionOrderType];
+
+
+export const TransactionOrderType = {
+  dine_in: 'dine_in',
+  take_away: 'take_away',
+  delivery: 'delivery',
+} as const;
+
+export type TransactionStatus = typeof TransactionStatus[keyof typeof TransactionStatus];
+
+
+export const TransactionStatus = {
+  open: 'open',
+  paid: 'paid',
+  void: 'void',
+} as const;
+
+export interface Transaction {
+  id: number;
+  invoiceNumber: string;
+  orderType: TransactionOrderType;
+  status: TransactionStatus;
+  /** @nullable */
+  tableId?: number | null;
+  /** @nullable */
+  tableName?: string | null;
+  /** @nullable */
+  customerName?: string | null;
+  /** @nullable */
+  notes?: string | null;
+  cashierId: number;
+  cashierName: string;
+  subtotal: number;
+  discountAmount: number;
+  taxAmount: number;
+  serviceChargeAmount: number;
+  totalAmount: number;
+  itemCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type TransactionDetailOrderType = typeof TransactionDetailOrderType[keyof typeof TransactionDetailOrderType];
+
+
+export const TransactionDetailOrderType = {
+  dine_in: 'dine_in',
+  take_away: 'take_away',
+  delivery: 'delivery',
+} as const;
+
+export type TransactionDetailStatus = typeof TransactionDetailStatus[keyof typeof TransactionDetailStatus];
+
+
+export const TransactionDetailStatus = {
+  open: 'open',
+  paid: 'paid',
+  void: 'void',
+} as const;
+
+export interface TransactionDetail {
+  id: number;
+  invoiceNumber: string;
+  orderType: TransactionDetailOrderType;
+  status: TransactionDetailStatus;
+  /** @nullable */
+  tableId?: number | null;
+  /** @nullable */
+  tableName?: string | null;
+  /** @nullable */
+  customerName?: string | null;
+  /** @nullable */
+  notes?: string | null;
+  cashierId: number;
+  cashierName: string;
+  subtotal: number;
+  discountAmount: number;
+  taxAmount: number;
+  serviceChargeAmount: number;
+  totalAmount: number;
+  items: TransactionItem[];
+  payment?: Payment | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateTransactionItemInput {
+  productId: number;
+  quantity: number;
+  notes?: string;
+}
+
+export type CreateTransactionInputOrderType = typeof CreateTransactionInputOrderType[keyof typeof CreateTransactionInputOrderType];
+
+
+export const CreateTransactionInputOrderType = {
+  dine_in: 'dine_in',
+  take_away: 'take_away',
+  delivery: 'delivery',
+} as const;
+
+export interface CreateTransactionInput {
+  orderType: CreateTransactionInputOrderType;
+  tableId?: number;
+  customerName?: string;
+  notes?: string;
+  discountAmount?: number;
+  items: CreateTransactionItemInput[];
+}
+
+export type PayTransactionInputPaymentMethod = typeof PayTransactionInputPaymentMethod[keyof typeof PayTransactionInputPaymentMethod];
+
+
+export const PayTransactionInputPaymentMethod = {
+  cash: 'cash',
+  debit: 'debit',
+  credit_card: 'credit_card',
+  bank_transfer: 'bank_transfer',
+  qris: 'qris',
+} as const;
+
+export interface PayTransactionInput {
+  paymentMethod: PayTransactionInputPaymentMethod;
+  amountPaid: number;
+  reference?: string;
+}
+
+export interface QrisSettings {
+  id: number;
+  merchantName: string;
+  /** @nullable */
+  qrisImageUrl?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface QrisSettingsUpdate {
+  merchantName?: string;
 }
 
 export type CategoryStatus = typeof CategoryStatus[keyof typeof CategoryStatus];
@@ -375,4 +589,10 @@ export interface StoreSettingsUpdate {
   currencySymbol?: string;
   receiptFooter?: string;
 }
+
+export type GetTransactionsParams = {
+status?: string;
+date?: string;
+limit?: number;
+};
 

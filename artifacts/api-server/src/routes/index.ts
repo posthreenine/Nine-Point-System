@@ -11,6 +11,9 @@ import ingredientsRouter from "./ingredients";
 import stockMovementsRouter from "./stock-movements";
 import recipesRouter from "./recipes";
 import reportsRouter from "./reports";
+import tablesRouter from "./tables";
+import transactionsRouter from "./transactions";
+import qrisSettingsRouter from "./qris-settings";
 
 const router: IRouter = Router();
 
@@ -26,5 +29,8 @@ router.use(ingredientsRouter);
 router.use(stockMovementsRouter);
 router.use(recipesRouter);
 router.use(reportsRouter);
+router.use(tablesRouter);
+router.use(transactionsRouter);
+router.use(qrisSettingsRouter);
 
 export default router;

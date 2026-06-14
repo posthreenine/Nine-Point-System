@@ -5,6 +5,7 @@
  * THREE NINE POS API
  * OpenAPI spec version: 0.1.0
  */
+import type { BestSellingProduct } from './bestSellingProduct';
 import type { RoleCount } from './roleCount';
 
 export interface DashboardStats {
@@ -12,4 +13,9 @@ export interface DashboardStats {
   activeUsers: number;
   totalRoles: number;
   usersByRole: RoleCount[];
+  todaySales: number;
+  todayTransactions: number;
+  totalProducts: number;
+  openTables: number;
+  bestSellingProducts: BestSellingProduct[];
 }

@@ -1,0 +1,2 @@
+- [POS Transaction Flow](pos-transaction-flow.md) — createTransaction then payTransaction separately; stock deducted on pay; table freed on pay or void
+- [Generated Hook Signatures](generated-hook-signatures.md) — Orval mutations use `{ data: Body }` or `{ id, data: Body }` shape, never direct spread

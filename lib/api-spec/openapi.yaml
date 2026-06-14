@@ -29,6 +29,12 @@ tags:
     description: Recipe management
   - name: reports
     description: Reports and analytics
+  - name: tables
+    description: Restaurant table management
+  - name: transactions
+    description: POS transactions
+  - name: qris
+    description: QRIS payment settings
 paths:
   /healthz:
     get:
@@ -890,6 +896,223 @@ paths:
                 items:
                   $ref: "#/components/schemas/Recipe"
 
+  /tables:
+    get:
+      operationId: getRestaurantTables
+      tags: [tables]
+      summary: List all restaurant tables
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Tables
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RestaurantTable"
+
+  /tables/{id}:
+    patch:
+      operationId: updateRestaurantTable
+      tags: [tables]
+      summary: Update table status/info
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTableInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RestaurantTable"
+
+  /transactions:
+    get:
+      operationId: getTransactions
+      tags: [transactions]
+      summary: List transactions
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: date
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+    post:
+      operationId: createTransaction
+      tags: [transactions]
+      summary: Create a transaction
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTransactionInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionDetail"
+
+  /transactions/{id}:
+    get:
+      operationId: getTransaction
+      tags: [transactions]
+      summary: Get transaction detail
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Transaction detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /transactions/{id}/pay:
+    post:
+      operationId: payTransaction
+      tags: [transactions]
+      summary: Process payment for a transaction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PayTransactionInput"
+      responses:
+        "200":
+          description: Paid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionDetail"
+
+  /transactions/{id}/void:
+    post:
+      operationId: voidTransaction
+      tags: [transactions]
+      summary: Void/cancel a transaction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Voided
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /qris-settings:
+    get:
+      operationId: getQrisSettings
+      tags: [qris]
+      summary: Get QRIS settings
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: QRIS settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QrisSettings"
+    put:
+      operationId: updateQrisSettings
+      tags: [qris]
+      summary: Update QRIS settings
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QrisSettingsUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QrisSettings"
+
+  /qris-settings/image:
+    delete:
+      operationId: deleteQrisImage
+      tags: [qris]
+      summary: Remove QRIS image
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
   /reports/profit-analysis:
     get:
       operationId: getProfitAnalysis
@@ -1107,7 +1330,19 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/RoleCount"
-      required: [totalUsers, activeUsers, totalRoles, usersByRole]
+        todaySales:
+          type: number
+        todayTransactions:
+          type: integer
+        totalProducts:
+          type: integer
+        openTables:
+          type: integer
+        bestSellingProducts:
+          type: array
+          items:
+            $ref: "#/components/schemas/BestSellingProduct"
+      required: [totalUsers, activeUsers, totalRoles, usersByRole, todaySales, todayTransactions, totalProducts, openTables, bestSellingProducts]
 
     RoleCount:
       type: object
@@ -1154,6 +1389,249 @@ components:
         updatedAt:
           type: string
       required: [id, storeName, taxPercentage, serviceChargePercentage, currencyCode, currencySymbol, createdAt, updatedAt]
+
+    RestaurantTable:
+      type: object
+      properties:
+        id:
+          type: integer
+        tableNumber:
+          type: integer
+        name:
+          type: string
+        capacity:
+          type: integer
+        status:
+          type: string
+          enum: [available, occupied, reserved]
+        currentTransactionId:
+          type: ["integer", "null"]
+        currentInvoiceNumber:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, tableNumber, name, capacity, status, createdAt, updatedAt]
+
+    UpdateTableInput:
+      type: object
+      properties:
+        name:
+          type: string
+        capacity:
+          type: integer
+        status:
+          type: string
+          enum: [available, occupied, reserved]
+
+    TransactionItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        productId:
+          type: integer
+        productName:
+          type: string
+        productCode:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        subtotal:
+          type: number
+        notes:
+          type: ["string", "null"]
+      required: [id, productId, productName, productCode, quantity, unitPrice, subtotal]
+
+    Payment:
+      type: object
+      properties:
+        id:
+          type: integer
+        paymentMethod:
+          type: string
+        amountPaid:
+          type: number
+        changeAmount:
+          type: number
+        status:
+          type: string
+        reference:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required: [id, paymentMethod, amountPaid, changeAmount, status, createdAt]
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        invoiceNumber:
+          type: string
+        orderType:
+          type: string
+          enum: [dine_in, take_away, delivery]
+        status:
+          type: string
+          enum: [open, paid, void]
+        tableId:
+          type: ["integer", "null"]
+        tableName:
+          type: ["string", "null"]
+        customerName:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        cashierId:
+          type: integer
+        cashierName:
+          type: string
+        subtotal:
+          type: number
+        discountAmount:
+          type: number
+        taxAmount:
+          type: number
+        serviceChargeAmount:
+          type: number
+        totalAmount:
+          type: number
+        itemCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, invoiceNumber, orderType, status, cashierId, cashierName, subtotal, discountAmount, taxAmount, serviceChargeAmount, totalAmount, itemCount, createdAt, updatedAt]
+
+    TransactionDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        invoiceNumber:
+          type: string
+        orderType:
+          type: string
+          enum: [dine_in, take_away, delivery]
+        status:
+          type: string
+          enum: [open, paid, void]
+        tableId:
+          type: ["integer", "null"]
+        tableName:
+          type: ["string", "null"]
+        customerName:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        cashierId:
+          type: integer
+        cashierName:
+          type: string
+        subtotal:
+          type: number
+        discountAmount:
+          type: number
+        taxAmount:
+          type: number
+        serviceChargeAmount:
+          type: number
+        totalAmount:
+          type: number
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionItem"
+        payment:
+          nullable: true
+          $ref: "#/components/schemas/Payment"
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, invoiceNumber, orderType, status, cashierId, cashierName, subtotal, discountAmount, taxAmount, serviceChargeAmount, totalAmount, items, createdAt, updatedAt]
+
+    CreateTransactionItemInput:
+      type: object
+      properties:
+        productId:
+          type: integer
+        quantity:
+          type: integer
+        notes:
+          type: string
+      required: [productId, quantity]
+
+    CreateTransactionInput:
+      type: object
+      properties:
+        orderType:
+          type: string
+          enum: [dine_in, take_away, delivery]
+        tableId:
+          type: integer
+        customerName:
+          type: string
+        notes:
+          type: string
+        discountAmount:
+          type: number
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateTransactionItemInput"
+      required: [orderType, items]
+
+    PayTransactionInput:
+      type: object
+      properties:
+        paymentMethod:
+          type: string
+          enum: [cash, debit, credit_card, bank_transfer, qris]
+        amountPaid:
+          type: number
+        reference:
+          type: string
+      required: [paymentMethod, amountPaid]
+
+    QrisSettings:
+      type: object
+      properties:
+        id:
+          type: integer
+        merchantName:
+          type: string
+        qrisImageUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, merchantName, createdAt, updatedAt]
+
+    QrisSettingsUpdate:
+      type: object
+      properties:
+        merchantName:
+          type: string
+
+    BestSellingProduct:
+      type: object
+      properties:
+        productId:
+          type: integer
+        productName:
+          type: string
+        totalSold:
+          type: integer
+        totalRevenue:
+          type: number
+      required: [productId, productName, totalSold, totalRevenue]
 
     Category:
       type: object

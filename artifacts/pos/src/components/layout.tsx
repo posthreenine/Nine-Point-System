@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Users, ShieldCheck, Key, LogOut, Menu,
   Settings, ChevronDown, ChevronRight, Store, Layers,
   Package, FlaskConical, Warehouse, ClipboardList, ChefHat,
-  BarChart3, TrendingUp,
+  BarChart3, TrendingUp, ShoppingCart, Table2, Receipt, QrCode,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -15,13 +15,6 @@ import { cn } from "@/lib/utils";
 
 interface LayoutProps {
   children: ReactNode;
-}
-
-interface NavGroup {
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  pathPrefix: string;
-  links: { href: string; label: string; icon: React.ComponentType<{ className?: string }> }[];
 }
 
 export function Layout({ children }: LayoutProps) {
@@ -32,6 +25,8 @@ export function Layout({ children }: LayoutProps) {
 
   const isOwner = user?.roleName === "Owner";
   const isManager = user?.roleName === "Manager";
+  const isCashier = user?.roleName === "Cashier";
+  const isKitchen = user?.roleName === "Kitchen";
   const canManage = isOwner || isManager;
 
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => ({
@@ -39,6 +34,7 @@ export function Layout({ children }: LayoutProps) {
     inventory: location.startsWith("/inventory"),
     reports: location.startsWith("/reports"),
     admin: location.startsWith("/admin"),
+    pos: location.startsWith("/pos") || location.startsWith("/tables") || location.startsWith("/transactions"),
   }));
 
   function toggleGroup(key: string) {
@@ -50,10 +46,10 @@ export function Layout({ children }: LayoutProps) {
     finally { logout(); }
   };
 
-  const navLinkClass = (href: string) =>
+  const navLinkClass = (href: string, exact = false) =>
     cn(
       "flex items-center gap-3 px-3 py-2 rounded-md transition-colors font-medium text-sm",
-      location === href
+      (exact ? location === href : location === href || location.startsWith(href + "/"))
         ? "bg-sidebar-accent text-sidebar-accent-foreground"
         : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
     );
@@ -76,8 +72,15 @@ export function Layout({ children }: LayoutProps) {
     { href: "/reports/profit", label: "Profit Analysis", icon: TrendingUp },
   ];
 
+  const posLinks = [
+    { href: "/pos", label: "Cashier Screen", icon: ShoppingCart },
+    { href: "/tables", label: "Table Management", icon: Table2 },
+    { href: "/transactions", label: "Transactions", icon: Receipt },
+  ];
+
   const adminLinks = [
     { href: "/admin/store-settings", label: "Store Settings", icon: Store },
+    { href: "/admin/qris-settings", label: "QRIS Settings", icon: QrCode },
   ];
 
   const CollapsibleGroup = ({ groupKey, icon: GroupIcon, label, links, onNavigate }: {
@@ -88,15 +91,12 @@ export function Layout({ children }: LayoutProps) {
     onNavigate?: () => void;
   }) => {
     const isOpen = openGroups[groupKey];
-    const isActive = links.some(l => l.href === location || location.startsWith(l.href + "/"));
+    const isActive = links.some(l => location === l.href || location.startsWith(l.href + "/"));
     return (
       <div className="pt-1">
         <button
           onClick={() => toggleGroup(groupKey)}
-          className={cn(
-            groupHeaderClass,
-            isActive && "text-sidebar-foreground"
-          )}
+          className={cn(groupHeaderClass, isActive && "text-sidebar-foreground")}
         >
           <span className="flex items-center gap-2">
             <GroupIcon className="h-3.5 w-3.5" />
@@ -107,7 +107,7 @@ export function Layout({ children }: LayoutProps) {
         {isOpen && (
           <div className="mt-1 pl-2 border-l-2 border-sidebar-border ml-4 space-y-0.5">
             {links.map(link => (
-              <Link key={link.href} href={link.href} className={navLinkClass(link.href)} onClick={onNavigate}>
+              <Link key={link.href} href={link.href} className={navLinkClass(link.href, true)} onClick={onNavigate}>
                 <link.icon className="h-4 w-4 shrink-0" />
                 {link.label}
               </Link>
@@ -120,25 +120,40 @@ export function Layout({ children }: LayoutProps) {
 
   const NavLinks = ({ onNavigate }: { onNavigate?: () => void }) => (
     <div className="space-y-0.5">
-      <Link href="/dashboard" className={navLinkClass("/dashboard")} onClick={onNavigate}>
-        <LayoutDashboard className="h-4 w-4 shrink-0" />
-        Dashboard
-      </Link>
-      <Link href="/users" className={navLinkClass("/users")} onClick={onNavigate}>
-        <Users className="h-4 w-4 shrink-0" />
-        Users
-      </Link>
-      <Link href="/roles" className={navLinkClass("/roles")} onClick={onNavigate}>
-        <ShieldCheck className="h-4 w-4 shrink-0" />
-        Roles
-      </Link>
-      <Link href="/settings/password" className={navLinkClass("/settings/password")} onClick={onNavigate}>
+      {/* POS group — all authenticated users */}
+      <CollapsibleGroup groupKey="pos" icon={ShoppingCart} label="POS" links={posLinks} onNavigate={onNavigate} />
+
+      {/* Dashboard — managers and owners */}
+      {canManage && (
+        <Link href="/dashboard" className={navLinkClass("/dashboard", true)} onClick={onNavigate}>
+          <LayoutDashboard className="h-4 w-4 shrink-0" />
+          Dashboard
+        </Link>
+      )}
+
+      {/* Staff management — owners only */}
+      {isOwner && (
+        <>
+          <Link href="/users" className={navLinkClass("/users", true)} onClick={onNavigate}>
+            <Users className="h-4 w-4 shrink-0" />
+            Users
+          </Link>
+          <Link href="/roles" className={navLinkClass("/roles", true)} onClick={onNavigate}>
+            <ShieldCheck className="h-4 w-4 shrink-0" />
+            Roles
+          </Link>
+        </>
+      )}
+
+      <Link href="/settings/password" className={navLinkClass("/settings/password", true)} onClick={onNavigate}>
         <Key className="h-4 w-4 shrink-0" />
         Change Password
       </Link>
 
-      {/* Products group — visible to everyone */}
-      <CollapsibleGroup groupKey="products" icon={Package} label="Products" links={productLinks} onNavigate={onNavigate} />
+      {/* Products group */}
+      {!isKitchen && (
+        <CollapsibleGroup groupKey="products" icon={Package} label="Products" links={productLinks} onNavigate={onNavigate} />
+      )}
 
       {/* Inventory — Owner/Manager */}
       {canManage && (
@@ -177,6 +192,8 @@ export function Layout({ children }: LayoutProps) {
       </div>
     </div>
   );
+
+  const isPOSPage = location === "/pos";
 
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden">
@@ -247,7 +264,10 @@ export function Layout({ children }: LayoutProps) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-5 md:p-8 bg-background">
+        <main className={cn(
+          "flex-1 overflow-hidden bg-background",
+          isPOSPage ? "" : "overflow-y-auto p-5 md:p-8"
+        )}>
           {children}
         </main>
       </div>

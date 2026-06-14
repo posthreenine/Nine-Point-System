@@ -121,6 +121,67 @@ function initDatabase(): void {
       user_id INTEGER NOT NULL REFERENCES users(id),
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS restaurant_tables (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      table_number INTEGER NOT NULL UNIQUE,
+      name TEXT NOT NULL,
+      capacity INTEGER NOT NULL DEFAULT 4,
+      status TEXT NOT NULL DEFAULT 'available',
+      current_transaction_id INTEGER,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS transactions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      invoice_number TEXT NOT NULL UNIQUE,
+      order_type TEXT NOT NULL DEFAULT 'dine_in',
+      status TEXT NOT NULL DEFAULT 'open',
+      table_id INTEGER REFERENCES restaurant_tables(id),
+      customer_name TEXT,
+      notes TEXT,
+      cashier_id INTEGER NOT NULL REFERENCES users(id),
+      subtotal REAL NOT NULL DEFAULT 0,
+      discount_amount REAL NOT NULL DEFAULT 0,
+      tax_amount REAL NOT NULL DEFAULT 0,
+      service_charge_amount REAL NOT NULL DEFAULT 0,
+      total_amount REAL NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS transaction_items (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      transaction_id INTEGER NOT NULL REFERENCES transactions(id) ON DELETE CASCADE,
+      product_id INTEGER NOT NULL REFERENCES products(id),
+      product_name TEXT NOT NULL,
+      product_code TEXT NOT NULL,
+      quantity INTEGER NOT NULL DEFAULT 1,
+      unit_price REAL NOT NULL,
+      subtotal REAL NOT NULL,
+      notes TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS payments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      transaction_id INTEGER NOT NULL REFERENCES transactions(id),
+      payment_method TEXT NOT NULL,
+      amount_paid REAL NOT NULL,
+      change_amount REAL NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'paid',
+      reference TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS qris_settings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      merchant_name TEXT NOT NULL DEFAULT '',
+      qris_image TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `);
 
   seedRoles();
@@ -130,6 +191,8 @@ function initDatabase(): void {
   seedProducts();
   seedIngredients();
   seedRecipes();
+  seedTables();
+  seedQrisSettings();
 }
 
 function seedRoles() {
@@ -262,6 +325,23 @@ function seedRecipes() {
   addRecipe("PIZZA-001", [["Pizza Dough", 200], ["Mozzarella Cheese", 150], ["Tomato Sauce", 80]]);
 
   logger.info("Seeded sample recipes");
+}
+
+function seedTables() {
+  const count = (db.prepare("SELECT COUNT(*) as c FROM restaurant_tables").get() as { c: number }).c;
+  if (count > 0) return;
+  const ins = db.prepare("INSERT INTO restaurant_tables (table_number, name, capacity) VALUES (?, ?, ?)");
+  for (let i = 1; i <= 20; i++) {
+    ins.run(i, `Table ${i}`, 4);
+  }
+  logger.info("Seeded 20 restaurant tables");
+}
+
+function seedQrisSettings() {
+  const count = (db.prepare("SELECT COUNT(*) as c FROM qris_settings").get() as { c: number }).c;
+  if (count > 0) return;
+  db.prepare("INSERT INTO qris_settings (merchant_name) VALUES (?)").run("THREE NINE COFFEE & EATERY");
+  logger.info("Seeded QRIS settings");
 }
 
 initDatabase();

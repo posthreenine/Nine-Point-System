@@ -703,6 +703,246 @@ export const GetRecipesResponse = zod.array(GetRecipesResponseItem)
 
 
 /**
+ * @summary List all restaurant tables
+ */
+export const GetRestaurantTablesResponseItem = zod.object({
+  "id": zod.number(),
+  "tableNumber": zod.number(),
+  "name": zod.string(),
+  "capacity": zod.number(),
+  "status": zod.enum(['available', 'occupied', 'reserved']),
+  "currentTransactionId": zod.number().nullish(),
+  "currentInvoiceNumber": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+export const GetRestaurantTablesResponse = zod.array(GetRestaurantTablesResponseItem)
+
+
+/**
+ * @summary Update table status/info
+ */
+export const UpdateRestaurantTableParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateRestaurantTableBody = zod.object({
+  "name": zod.string().optional(),
+  "capacity": zod.number().optional(),
+  "status": zod.enum(['available', 'occupied', 'reserved']).optional()
+})
+
+export const UpdateRestaurantTableResponse = zod.object({
+  "id": zod.number(),
+  "tableNumber": zod.number(),
+  "name": zod.string(),
+  "capacity": zod.number(),
+  "status": zod.enum(['available', 'occupied', 'reserved']),
+  "currentTransactionId": zod.number().nullish(),
+  "currentInvoiceNumber": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary List transactions
+ */
+export const GetTransactionsQueryParams = zod.object({
+  "status": zod.coerce.string().optional(),
+  "date": zod.coerce.string().optional(),
+  "limit": zod.coerce.number().optional()
+})
+
+export const GetTransactionsResponseItem = zod.object({
+  "id": zod.number(),
+  "invoiceNumber": zod.string(),
+  "orderType": zod.enum(['dine_in', 'take_away', 'delivery']),
+  "status": zod.enum(['open', 'paid', 'void']),
+  "tableId": zod.number().nullish(),
+  "tableName": zod.string().nullish(),
+  "customerName": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "cashierId": zod.number(),
+  "cashierName": zod.string(),
+  "subtotal": zod.number(),
+  "discountAmount": zod.number(),
+  "taxAmount": zod.number(),
+  "serviceChargeAmount": zod.number(),
+  "totalAmount": zod.number(),
+  "itemCount": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+export const GetTransactionsResponse = zod.array(GetTransactionsResponseItem)
+
+
+/**
+ * @summary Create a transaction
+ */
+export const CreateTransactionBody = zod.object({
+  "orderType": zod.enum(['dine_in', 'take_away', 'delivery']),
+  "tableId": zod.number().optional(),
+  "customerName": zod.string().optional(),
+  "notes": zod.string().optional(),
+  "discountAmount": zod.number().optional(),
+  "items": zod.array(zod.object({
+  "productId": zod.number(),
+  "quantity": zod.number(),
+  "notes": zod.string().optional()
+}))
+})
+
+
+/**
+ * @summary Get transaction detail
+ */
+export const GetTransactionParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetTransactionResponse = zod.object({
+  "id": zod.number(),
+  "invoiceNumber": zod.string(),
+  "orderType": zod.enum(['dine_in', 'take_away', 'delivery']),
+  "status": zod.enum(['open', 'paid', 'void']),
+  "tableId": zod.number().nullish(),
+  "tableName": zod.string().nullish(),
+  "customerName": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "cashierId": zod.number(),
+  "cashierName": zod.string(),
+  "subtotal": zod.number(),
+  "discountAmount": zod.number(),
+  "taxAmount": zod.number(),
+  "serviceChargeAmount": zod.number(),
+  "totalAmount": zod.number(),
+  "items": zod.array(zod.object({
+  "id": zod.number(),
+  "productId": zod.number(),
+  "productName": zod.string(),
+  "productCode": zod.string(),
+  "quantity": zod.number(),
+  "unitPrice": zod.number(),
+  "subtotal": zod.number(),
+  "notes": zod.string().nullish()
+})),
+  "payment": zod.object({
+  "id": zod.number(),
+  "paymentMethod": zod.string(),
+  "amountPaid": zod.number(),
+  "changeAmount": zod.number(),
+  "status": zod.string(),
+  "reference": zod.string().nullish(),
+  "createdAt": zod.string()
+}).nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Process payment for a transaction
+ */
+export const PayTransactionParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const PayTransactionBody = zod.object({
+  "paymentMethod": zod.enum(['cash', 'debit', 'credit_card', 'bank_transfer', 'qris']),
+  "amountPaid": zod.number(),
+  "reference": zod.string().optional()
+})
+
+export const PayTransactionResponse = zod.object({
+  "id": zod.number(),
+  "invoiceNumber": zod.string(),
+  "orderType": zod.enum(['dine_in', 'take_away', 'delivery']),
+  "status": zod.enum(['open', 'paid', 'void']),
+  "tableId": zod.number().nullish(),
+  "tableName": zod.string().nullish(),
+  "customerName": zod.string().nullish(),
+  "notes": zod.string().nullish(),
+  "cashierId": zod.number(),
+  "cashierName": zod.string(),
+  "subtotal": zod.number(),
+  "discountAmount": zod.number(),
+  "taxAmount": zod.number(),
+  "serviceChargeAmount": zod.number(),
+  "totalAmount": zod.number(),
+  "items": zod.array(zod.object({
+  "id": zod.number(),
+  "productId": zod.number(),
+  "productName": zod.string(),
+  "productCode": zod.string(),
+  "quantity": zod.number(),
+  "unitPrice": zod.number(),
+  "subtotal": zod.number(),
+  "notes": zod.string().nullish()
+})),
+  "payment": zod.object({
+  "id": zod.number(),
+  "paymentMethod": zod.string(),
+  "amountPaid": zod.number(),
+  "changeAmount": zod.number(),
+  "status": zod.string(),
+  "reference": zod.string().nullish(),
+  "createdAt": zod.string()
+}).nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Void/cancel a transaction
+ */
+export const VoidTransactionParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const VoidTransactionResponse = zod.object({
+  "message": zod.string()
+})
+
+
+/**
+ * @summary Get QRIS settings
+ */
+export const GetQrisSettingsResponse = zod.object({
+  "id": zod.number(),
+  "merchantName": zod.string(),
+  "qrisImageUrl": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Update QRIS settings
+ */
+export const UpdateQrisSettingsBody = zod.object({
+  "merchantName": zod.string().optional()
+})
+
+export const UpdateQrisSettingsResponse = zod.object({
+  "id": zod.number(),
+  "merchantName": zod.string(),
+  "qrisImageUrl": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Remove QRIS image
+ */
+export const DeleteQrisImageResponse = zod.object({
+  "message": zod.string()
+})
+
+
+/**
  * @summary Get HPP and profit analysis for all products
  */
 export const GetProfitAnalysisResponseItem = zod.object({
@@ -729,6 +969,16 @@ export const GetDashboardStatsResponse = zod.object({
   "usersByRole": zod.array(zod.object({
   "roleName": zod.string(),
   "count": zod.number()
+})),
+  "todaySales": zod.number(),
+  "todayTransactions": zod.number(),
+  "totalProducts": zod.number(),
+  "openTables": zod.number(),
+  "bestSellingProducts": zod.array(zod.object({
+  "productId": zod.number(),
+  "productName": zod.string(),
+  "totalSold": zod.number(),
+  "totalRevenue": zod.number()
 }))
 })
 

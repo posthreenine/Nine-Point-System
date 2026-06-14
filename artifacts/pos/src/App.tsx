@@ -20,6 +20,11 @@ import StockMovements from "@/pages/stock-movements";
 import Recipes from "@/pages/recipes";
 import ProfitAnalysis from "@/pages/profit-analysis";
 
+import POS from "@/pages/pos";
+import Tables from "@/pages/tables";
+import Transactions from "@/pages/transactions";
+import QrisSettings from "@/pages/qris-settings";
+
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ component: Component }: { component: React.ComponentType<any> }) => {
@@ -47,7 +52,7 @@ function Router() {
         {() => {
           const { user, isLoading } = useAuth();
           if (isLoading) return null;
-          return user ? <Redirect to="/dashboard" /> : <Redirect to="/login" />;
+          return user ? <Redirect to="/pos" /> : <Redirect to="/login" />;
         }}
       </Route>
       <Route path="/login" component={Login} />
@@ -56,6 +61,12 @@ function Router() {
       <Route path="/roles"><ProtectedRoute component={Roles} /></Route>
       <Route path="/settings/password"><ProtectedRoute component={ChangePassword} /></Route>
       <Route path="/admin/store-settings"><ProtectedRoute component={StoreSettings} /></Route>
+      <Route path="/admin/qris-settings"><ProtectedRoute component={QrisSettings} /></Route>
+
+      {/* POS */}
+      <Route path="/pos"><ProtectedRoute component={POS} /></Route>
+      <Route path="/tables"><ProtectedRoute component={Tables} /></Route>
+      <Route path="/transactions"><ProtectedRoute component={Transactions} /></Route>
 
       {/* Products module */}
       <Route path="/products/categories"><ProtectedRoute component={Categories} /></Route>

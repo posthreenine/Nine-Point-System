@@ -1,0 +1,304 @@
+Continue developing THREE NINE POS.
+
+IMPORTANT:
+
+Do not modify or break existing modules:
+
+- Authentication
+- Dashboard
+- Store Settings
+- Categories
+- Products
+- Ingredients
+- Inventory
+- Recipes
+- HPP
+
+Use existing database and UI structure.
+
+Create complete POS Transaction System.
+
+MODULES TO BUILD
+
+1. POS Cashier Screen
+2. Restaurant Table Management
+3. Transaction Management
+4. Payment System
+5. QRIS Payment
+6. Receipt Printing
+
+DATABASE TABLES
+
+tables
+transactions
+transaction_items
+payments
+
+TABLE MANAGEMENT
+
+Create table management page.
+
+Generate 20 tables automatically:
+
+Table 1
+Table 2
+Table 3
+...
+Table 20
+
+Table Status:
+
+- Available
+- Occupied
+- Reserved
+
+Features:
+
+- Open Table
+- Close Table
+- Move Table
+- Merge Table
+- Change Table
+
+POS CASHIER SCREEN
+
+Layout:
+
+LEFT SIDEBAR
+
+Categories
+
+CENTER
+
+Product Grid
+
+Display:
+
+- Product Image
+- Product Name
+- Selling Price
+
+RIGHT PANEL
+
+Shopping Cart
+
+Display:
+
+- Product Name
+- Quantity
+- Notes
+- Price
+- Remove Item
+
+Bottom Summary:
+
+- Subtotal
+- Discount
+- Tax
+- Service Charge
+- Grand Total
+
+Features:
+
+- Product Search
+- Category Filter
+- Add Product
+- Remove Product
+- Quantity Adjustment
+- Notes Per Item
+
+ORDER TYPES
+
+- Dine In
+- Take Away
+- Delivery
+
+TRANSACTIONS
+
+Generate automatic invoice number.
+
+Example:
+
+TN-2026-000001
+
+Store:
+
+- Invoice Number
+- Date
+- Cashier
+- Customer
+- Table
+- Items
+- Total
+- Payment Method
+
+TRANSACTION ITEMS
+
+Store:
+
+- Product
+- Quantity
+- Price
+- Notes
+
+PAYMENT SYSTEM
+
+Methods:
+
+- Cash
+- Debit
+- Credit Card
+- Bank Transfer
+- QRIS
+
+CASH PAYMENT
+
+Features:
+
+- Enter Amount Received
+- Calculate Change Automatically
+
+Example:
+
+Total:
+50,000
+
+Paid:
+100,000
+
+Change:
+50,000
+
+QRIS SYSTEM
+
+Create QRIS Settings.
+
+Fields:
+
+- Merchant Name
+- QRIS Image Upload
+
+When QRIS selected:
+
+Show QRIS image fullscreen.
+
+Payment Status:
+
+- Pending
+- Paid
+- Cancelled
+
+Cashier can manually confirm payment.
+
+RECEIPT SYSTEM
+
+Create professional receipt.
+
+Display:
+
+Store Logo
+Store Name
+Address
+Phone
+
+Invoice Number
+Date
+Cashier
+
+Items
+Qty
+Price
+
+Subtotal
+Discount
+Tax
+Service Charge
+Grand Total
+
+Payment Method
+
+Receipt Footer
+
+PRINTING
+
+Create:
+
+- Print Receipt
+- Reprint Receipt
+- Browser Print Support
+
+INVENTORY INTEGRATION
+
+When transaction completed:
+
+Automatically deduct ingredient stock based on recipe.
+
+Example:
+
+Cafe Latte sold:
+
+Reduce:
+
+Coffee Beans
+Milk
+
+Pizza sold:
+
+Reduce:
+
+Cheese
+Dough
+Toppings
+
+DASHBOARD INTEGRATION
+
+Update automatically:
+
+- Daily Sales
+- Revenue
+- Transactions Count
+- Best Selling Products
+
+ROLE PERMISSIONS
+
+Owner:
+Full Access
+
+Manager:
+Full Access
+
+Cashier:
+POS Access
+
+Kitchen:
+View Orders Only
+
+UI REQUIREMENTS
+
+Use existing Tailwind CSS design.
+
+Create:
+
+- Modern POS Layout
+- Large Touch Buttons
+- Tablet Friendly Design
+- Mobile Responsive Design
+- Fast Product Search
+- Loading States
+- Success Notifications
+- Error Notifications
+
+TESTING
+
+Before finishing:
+
+- Verify all database tables exist
+- Verify POS transactions work
+- Verify payments work
+- Verify QRIS works
+- Verify receipts print correctly
+- Verify stock deduction works
+- Verify dashboard updates
+- Fix all build errors automatically
+
+Generate complete backend, frontend, SQLite schema, migrations, API routes, controllers, validation, responsive UI, and testing.
