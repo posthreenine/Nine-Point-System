@@ -5,6 +5,12 @@ import usersRouter from "./users";
 import rolesRouter from "./roles";
 import dashboardRouter from "./dashboard";
 import storeSettingsRouter from "./store-settings";
+import categoriesRouter from "./categories";
+import productsRouter from "./products";
+import ingredientsRouter from "./ingredients";
+import stockMovementsRouter from "./stock-movements";
+import recipesRouter from "./recipes";
+import reportsRouter from "./reports";
 
 const router: IRouter = Router();
 
@@ -14,5 +20,11 @@ router.use(usersRouter);
 router.use(rolesRouter);
 router.use(dashboardRouter);
 router.use(storeSettingsRouter);
+router.use(categoriesRouter);
+router.use(productsRouter);
+router.use(ingredientsRouter);
+router.use(stockMovementsRouter);
+router.use(recipesRouter);
+router.use(reportsRouter);
 
 export default router;

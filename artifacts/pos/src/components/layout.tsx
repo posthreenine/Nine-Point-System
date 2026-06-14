@@ -5,7 +5,9 @@ import { useStoreSettings } from "@/hooks/use-store-settings";
 import { useLogout } from "@workspace/api-client-react";
 import {
   LayoutDashboard, Users, ShieldCheck, Key, LogOut, Menu,
-  Settings, ChevronDown, ChevronRight, Store,
+  Settings, ChevronDown, ChevronRight, Store, Layers,
+  Package, FlaskConical, Warehouse, ClipboardList, ChefHat,
+  BarChart3, TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -15,25 +17,37 @@ interface LayoutProps {
   children: ReactNode;
 }
 
+interface NavGroup {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  pathPrefix: string;
+  links: { href: string; label: string; icon: React.ComponentType<{ className?: string }> }[];
+}
+
 export function Layout({ children }: LayoutProps) {
   const { user, logout } = useAuth();
   const { settings } = useStoreSettings();
   const [location] = useLocation();
   const logoutMutation = useLogout();
-  const [adminOpen, setAdminOpen] = useState(
-    location.startsWith("/admin")
-  );
 
   const isOwner = user?.roleName === "Owner";
+  const isManager = user?.roleName === "Manager";
+  const canManage = isOwner || isManager;
+
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => ({
+    products: location.startsWith("/products"),
+    inventory: location.startsWith("/inventory"),
+    reports: location.startsWith("/reports"),
+    admin: location.startsWith("/admin"),
+  }));
+
+  function toggleGroup(key: string) {
+    setOpenGroups(prev => ({ ...prev, [key]: !prev[key] }));
+  }
 
   const handleLogout = async () => {
-    try {
-      await logoutMutation.mutateAsync();
-    } catch {
-      // ignore
-    } finally {
-      logout();
-    }
+    try { await logoutMutation.mutateAsync(); } catch { }
+    finally { logout(); }
   };
 
   const navLinkClass = (href: string) =>
@@ -44,8 +58,68 @@ export function Layout({ children }: LayoutProps) {
         : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
     );
 
+  const groupHeaderClass = "w-full flex items-center justify-between px-3 py-2 rounded-md text-xs font-semibold uppercase tracking-widest text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors";
+
+  const productLinks = [
+    { href: "/products/categories", label: "Categories", icon: Layers },
+    { href: "/products", label: "Products", icon: Package },
+    { href: "/products/ingredients", label: "Ingredients", icon: FlaskConical },
+    { href: "/products/recipes", label: "Recipes", icon: ChefHat },
+  ];
+
+  const inventoryLinks = [
+    { href: "/inventory/stock", label: "Stock Management", icon: Warehouse },
+    { href: "/inventory/movements", label: "Stock Movements", icon: ClipboardList },
+  ];
+
+  const reportLinks = [
+    { href: "/reports/profit", label: "Profit Analysis", icon: TrendingUp },
+  ];
+
+  const adminLinks = [
+    { href: "/admin/store-settings", label: "Store Settings", icon: Store },
+  ];
+
+  const CollapsibleGroup = ({ groupKey, icon: GroupIcon, label, links, onNavigate }: {
+    groupKey: string;
+    icon: React.ComponentType<{ className?: string }>;
+    label: string;
+    links: { href: string; label: string; icon: React.ComponentType<{ className?: string }> }[];
+    onNavigate?: () => void;
+  }) => {
+    const isOpen = openGroups[groupKey];
+    const isActive = links.some(l => l.href === location || location.startsWith(l.href + "/"));
+    return (
+      <div className="pt-1">
+        <button
+          onClick={() => toggleGroup(groupKey)}
+          className={cn(
+            groupHeaderClass,
+            isActive && "text-sidebar-foreground"
+          )}
+        >
+          <span className="flex items-center gap-2">
+            <GroupIcon className="h-3.5 w-3.5" />
+            {label}
+          </span>
+          {isOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+        </button>
+        {isOpen && (
+          <div className="mt-1 pl-2 border-l-2 border-sidebar-border ml-4 space-y-0.5">
+            {links.map(link => (
+              <Link key={link.href} href={link.href} className={navLinkClass(link.href)} onClick={onNavigate}>
+                <link.icon className="h-4 w-4 shrink-0" />
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const NavLinks = ({ onNavigate }: { onNavigate?: () => void }) => (
-    <div className="space-y-1">
+    <div className="space-y-0.5">
       <Link href="/dashboard" className={navLinkClass("/dashboard")} onClick={onNavigate}>
         <LayoutDashboard className="h-4 w-4 shrink-0" />
         Dashboard
@@ -63,36 +137,22 @@ export function Layout({ children }: LayoutProps) {
         Change Password
       </Link>
 
-      {isOwner && (
-        <div className="pt-2">
-          <button
-            onClick={() => setAdminOpen((v) => !v)}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-md text-xs font-semibold uppercase tracking-widest text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors"
-          >
-            <span className="flex items-center gap-2">
-              <Settings className="h-3.5 w-3.5" />
-              Administration
-            </span>
-            {adminOpen ? (
-              <ChevronDown className="h-3 w-3" />
-            ) : (
-              <ChevronRight className="h-3 w-3" />
-            )}
-          </button>
+      {/* Products group — visible to everyone */}
+      <CollapsibleGroup groupKey="products" icon={Package} label="Products" links={productLinks} onNavigate={onNavigate} />
 
-          {adminOpen && (
-            <div className="mt-1 pl-2 border-l-2 border-sidebar-border ml-4 space-y-1">
-              <Link
-                href="/admin/store-settings"
-                className={navLinkClass("/admin/store-settings")}
-                onClick={onNavigate}
-              >
-                <Store className="h-4 w-4 shrink-0" />
-                Store Settings
-              </Link>
-            </div>
-          )}
-        </div>
+      {/* Inventory — Owner/Manager */}
+      {canManage && (
+        <CollapsibleGroup groupKey="inventory" icon={Warehouse} label="Inventory" links={inventoryLinks} onNavigate={onNavigate} />
+      )}
+
+      {/* Reports — Owner/Manager */}
+      {canManage && (
+        <CollapsibleGroup groupKey="reports" icon={BarChart3} label="Reports" links={reportLinks} onNavigate={onNavigate} />
+      )}
+
+      {/* Admin — Owner only */}
+      {isOwner && (
+        <CollapsibleGroup groupKey="admin" icon={Settings} label="Administration" links={adminLinks} onNavigate={onNavigate} />
       )}
     </div>
   );
@@ -143,7 +203,6 @@ export function Layout({ children }: LayoutProps) {
         {/* Header */}
         <header className="h-14 flex items-center justify-between px-4 border-b bg-card shrink-0">
           <div className="flex items-center gap-3">
-            {/* Mobile hamburger */}
             <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
@@ -153,7 +212,7 @@ export function Layout({ children }: LayoutProps) {
                 </SheetTrigger>
                 <SheetContent side="left" className="w-64 p-0 bg-sidebar border-r-0">
                   <SidebarHeader />
-                  <nav className="p-4">
+                  <nav className="p-4 overflow-y-auto max-h-[calc(100vh-120px)]">
                     <NavLinks />
                   </nav>
                   <div className="p-4 border-t border-sidebar-border">
@@ -169,8 +228,6 @@ export function Layout({ children }: LayoutProps) {
                 </SheetContent>
               </Sheet>
             </div>
-
-            {/* Store name in header on desktop */}
             <div className="hidden md:block">
               <span className="text-sm font-semibold text-muted-foreground">{storeName}</span>
             </div>

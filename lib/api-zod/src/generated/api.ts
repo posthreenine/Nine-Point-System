@@ -325,6 +325,401 @@ export const DeleteStoreLogoResponse = zod.object({
 
 
 /**
+ * @summary List all categories
+ */
+export const GetCategoriesResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "status": zod.enum(['active', 'inactive']),
+  "productCount": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+export const GetCategoriesResponse = zod.array(GetCategoriesResponseItem)
+
+
+/**
+ * @summary Create a category
+ */
+export const CreateCategoryBody = zod.object({
+  "name": zod.string(),
+  "description": zod.string().optional(),
+  "status": zod.enum(['active', 'inactive']).optional()
+})
+
+
+/**
+ * @summary Get category by ID
+ */
+export const GetCategoryParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetCategoryResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "status": zod.enum(['active', 'inactive']),
+  "productCount": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Update a category
+ */
+export const UpdateCategoryParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateCategoryBody = zod.object({
+  "name": zod.string().optional(),
+  "description": zod.string().optional(),
+  "status": zod.enum(['active', 'inactive']).optional()
+})
+
+export const UpdateCategoryResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "description": zod.string().nullish(),
+  "status": zod.enum(['active', 'inactive']),
+  "productCount": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Delete a category
+ */
+export const DeleteCategoryParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteCategoryResponse = zod.object({
+  "message": zod.string()
+})
+
+
+/**
+ * @summary List all products
+ */
+export const GetProductsResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "code": zod.string(),
+  "categoryId": zod.number(),
+  "categoryName": zod.string().nullish(),
+  "description": zod.string().nullish(),
+  "sellingPrice": zod.number(),
+  "imageUrl": zod.string().nullish(),
+  "status": zod.enum(['active', 'inactive']),
+  "hpp": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+export const GetProductsResponse = zod.array(GetProductsResponseItem)
+
+
+/**
+ * @summary Create a product
+ */
+export const CreateProductBody = zod.object({
+  "name": zod.string(),
+  "code": zod.string(),
+  "categoryId": zod.number(),
+  "description": zod.string().optional(),
+  "sellingPrice": zod.number(),
+  "status": zod.enum(['active', 'inactive']).optional()
+})
+
+
+/**
+ * @summary Get product by ID
+ */
+export const GetProductParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetProductResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "code": zod.string(),
+  "categoryId": zod.number(),
+  "categoryName": zod.string().nullish(),
+  "description": zod.string().nullish(),
+  "sellingPrice": zod.number(),
+  "imageUrl": zod.string().nullish(),
+  "status": zod.enum(['active', 'inactive']),
+  "hpp": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Update a product
+ */
+export const UpdateProductParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateProductBody = zod.object({
+  "name": zod.string().optional(),
+  "code": zod.string().optional(),
+  "categoryId": zod.number().optional(),
+  "description": zod.string().optional(),
+  "sellingPrice": zod.number().optional(),
+  "status": zod.enum(['active', 'inactive']).optional()
+})
+
+export const UpdateProductResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "code": zod.string(),
+  "categoryId": zod.number(),
+  "categoryName": zod.string().nullish(),
+  "description": zod.string().nullish(),
+  "sellingPrice": zod.number(),
+  "imageUrl": zod.string().nullish(),
+  "status": zod.enum(['active', 'inactive']),
+  "hpp": zod.number(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Delete a product
+ */
+export const DeleteProductParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteProductResponse = zod.object({
+  "message": zod.string()
+})
+
+
+/**
+ * @summary Remove product image
+ */
+export const DeleteProductImageParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteProductImageResponse = zod.object({
+  "message": zod.string()
+})
+
+
+/**
+ * @summary List all ingredients
+ */
+export const GetIngredientsResponseItem = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "unit": zod.string(),
+  "purchasePrice": zod.number(),
+  "currentStock": zod.number(),
+  "minimumStock": zod.number(),
+  "stockStatus": zod.enum(['in_stock', 'low_stock', 'out_of_stock']),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+export const GetIngredientsResponse = zod.array(GetIngredientsResponseItem)
+
+
+/**
+ * @summary Create an ingredient
+ */
+export const CreateIngredientBody = zod.object({
+  "name": zod.string(),
+  "unit": zod.string(),
+  "purchasePrice": zod.number(),
+  "currentStock": zod.number().optional(),
+  "minimumStock": zod.number().optional()
+})
+
+
+/**
+ * @summary Get ingredient by ID
+ */
+export const GetIngredientParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const GetIngredientResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "unit": zod.string(),
+  "purchasePrice": zod.number(),
+  "currentStock": zod.number(),
+  "minimumStock": zod.number(),
+  "stockStatus": zod.enum(['in_stock', 'low_stock', 'out_of_stock']),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Update an ingredient
+ */
+export const UpdateIngredientParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateIngredientBody = zod.object({
+  "name": zod.string().optional(),
+  "unit": zod.string().optional(),
+  "purchasePrice": zod.number().optional(),
+  "currentStock": zod.number().optional(),
+  "minimumStock": zod.number().optional()
+})
+
+export const UpdateIngredientResponse = zod.object({
+  "id": zod.number(),
+  "name": zod.string(),
+  "unit": zod.string(),
+  "purchasePrice": zod.number(),
+  "currentStock": zod.number(),
+  "minimumStock": zod.number(),
+  "stockStatus": zod.enum(['in_stock', 'low_stock', 'out_of_stock']),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Delete an ingredient
+ */
+export const DeleteIngredientParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const DeleteIngredientResponse = zod.object({
+  "message": zod.string()
+})
+
+
+/**
+ * @summary List stock movements
+ */
+export const GetStockMovementsResponseItem = zod.object({
+  "id": zod.number(),
+  "ingredientId": zod.number(),
+  "ingredientName": zod.string(),
+  "unit": zod.string(),
+  "movementType": zod.enum(['in', 'out', 'adjustment', 'opname']),
+  "quantity": zod.number(),
+  "previousStock": zod.number(),
+  "newStock": zod.number(),
+  "notes": zod.string().nullish(),
+  "userId": zod.number(),
+  "userName": zod.string(),
+  "createdAt": zod.string()
+})
+export const GetStockMovementsResponse = zod.array(GetStockMovementsResponseItem)
+
+
+/**
+ * @summary Record a stock movement
+ */
+export const CreateStockMovementBody = zod.object({
+  "ingredientId": zod.number(),
+  "movementType": zod.enum(['in', 'out', 'adjustment', 'opname']),
+  "quantity": zod.number(),
+  "notes": zod.string().optional()
+})
+
+
+/**
+ * @summary Get recipe for a product
+ */
+export const GetRecipeParams = zod.object({
+  "productId": zod.coerce.number()
+})
+
+export const GetRecipeResponse = zod.object({
+  "productId": zod.number(),
+  "productName": zod.string(),
+  "items": zod.array(zod.object({
+  "ingredientId": zod.number(),
+  "ingredientName": zod.string(),
+  "unit": zod.string(),
+  "quantity": zod.number(),
+  "cost": zod.number()
+})),
+  "totalHpp": zod.number()
+})
+
+
+/**
+ * @summary Create or replace recipe for a product
+ */
+export const UpsertRecipeParams = zod.object({
+  "productId": zod.coerce.number()
+})
+
+export const UpsertRecipeBody = zod.object({
+  "items": zod.array(zod.object({
+  "ingredientId": zod.number(),
+  "quantity": zod.number()
+}))
+})
+
+export const UpsertRecipeResponse = zod.object({
+  "productId": zod.number(),
+  "productName": zod.string(),
+  "items": zod.array(zod.object({
+  "ingredientId": zod.number(),
+  "ingredientName": zod.string(),
+  "unit": zod.string(),
+  "quantity": zod.number(),
+  "cost": zod.number()
+})),
+  "totalHpp": zod.number()
+})
+
+
+/**
+ * @summary List all recipes
+ */
+export const GetRecipesResponseItem = zod.object({
+  "productId": zod.number(),
+  "productName": zod.string(),
+  "items": zod.array(zod.object({
+  "ingredientId": zod.number(),
+  "ingredientName": zod.string(),
+  "unit": zod.string(),
+  "quantity": zod.number(),
+  "cost": zod.number()
+})),
+  "totalHpp": zod.number()
+})
+export const GetRecipesResponse = zod.array(GetRecipesResponseItem)
+
+
+/**
+ * @summary Get HPP and profit analysis for all products
+ */
+export const GetProfitAnalysisResponseItem = zod.object({
+  "productId": zod.number(),
+  "productName": zod.string(),
+  "productCode": zod.string(),
+  "categoryName": zod.string().nullish(),
+  "sellingPrice": zod.number(),
+  "hpp": zod.number(),
+  "profit": zod.number(),
+  "marginPercentage": zod.number(),
+  "status": zod.string()
+})
+export const GetProfitAnalysisResponse = zod.array(GetProfitAnalysisResponseItem)
+
+
+/**
  * @summary Get dashboard overview stats
  */
 export const GetDashboardStatsResponse = zod.object({

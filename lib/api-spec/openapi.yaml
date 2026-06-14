@@ -17,6 +17,18 @@ tags:
     description: Role management
   - name: settings
     description: Store settings
+  - name: categories
+    description: Product categories
+  - name: products
+    description: Product management
+  - name: ingredients
+    description: Ingredient management
+  - name: inventory
+    description: Stock management
+  - name: recipes
+    description: Recipe management
+  - name: reports
+    description: Reports and analytics
 paths:
   /healthz:
     get:
@@ -431,6 +443,470 @@ paths:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
 
+  /categories:
+    get:
+      operationId: getCategories
+      tags: [categories]
+      summary: List all categories
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Categories list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+    post:
+      operationId: createCategory
+      tags: [categories]
+      summary: Create a category
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+  /categories/{id}:
+    get:
+      operationId: getCategory
+      tags: [categories]
+      summary: Get category by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateCategory
+      tags: [categories]
+      summary: Update a category
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+    delete:
+      operationId: deleteCategory
+      tags: [categories]
+      summary: Delete a category
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /products:
+    get:
+      operationId: getProducts
+      tags: [products]
+      summary: List all products
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Products list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+    post:
+      operationId: createProduct
+      tags: [products]
+      summary: Create a product
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+  /products/{id}:
+    get:
+      operationId: getProduct
+      tags: [products]
+      summary: Get product by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateProduct
+      tags: [products]
+      summary: Update a product
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+    delete:
+      operationId: deleteProduct
+      tags: [products]
+      summary: Delete a product
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /products/{id}/image:
+    delete:
+      operationId: deleteProductImage
+      tags: [products]
+      summary: Remove product image
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /ingredients:
+    get:
+      operationId: getIngredients
+      tags: [ingredients]
+      summary: List all ingredients
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Ingredients list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ingredient"
+    post:
+      operationId: createIngredient
+      tags: [ingredients]
+      summary: Create an ingredient
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IngredientInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+
+  /ingredients/{id}:
+    get:
+      operationId: getIngredient
+      tags: [ingredients]
+      summary: Get ingredient by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Ingredient
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateIngredient
+      tags: [ingredients]
+      summary: Update an ingredient
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IngredientUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+    delete:
+      operationId: deleteIngredient
+      tags: [ingredients]
+      summary: Delete an ingredient
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /stock-movements:
+    get:
+      operationId: getStockMovements
+      tags: [inventory]
+      summary: List stock movements
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Stock movements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StockMovement"
+    post:
+      operationId: createStockMovement
+      tags: [inventory]
+      summary: Record a stock movement
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StockMovementInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StockMovement"
+
+  /recipes/{productId}:
+    get:
+      operationId: getRecipe
+      tags: [recipes]
+      summary: Get recipe for a product
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Recipe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: upsertRecipe
+      tags: [recipes]
+      summary: Create or replace recipe for a product
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecipeInput"
+      responses:
+        "200":
+          description: Upserted recipe
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Recipe"
+
+  /recipes:
+    get:
+      operationId: getRecipes
+      tags: [recipes]
+      summary: List all recipes
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Recipes list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Recipe"
+
+  /reports/profit-analysis:
+    get:
+      operationId: getProfitAnalysis
+      tags: [reports]
+      summary: Get HPP and profit analysis for all products
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Profit analysis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProfitAnalysisItem"
+
   /dashboard/stats:
     get:
       operationId: getDashboardStats
@@ -678,6 +1154,282 @@ components:
         updatedAt:
           type: string
       required: [id, storeName, taxPercentage, serviceChargePercentage, currencyCode, currencySymbol, createdAt, updatedAt]
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [active, inactive]
+        productCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, name, status, productCount, createdAt, updatedAt]
+
+    CategoryInput:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+      required: [name]
+
+    CategoryUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        code:
+          type: string
+        categoryId:
+          type: integer
+        categoryName:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        sellingPrice:
+          type: number
+        imageUrl:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [active, inactive]
+        hpp:
+          type: number
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, name, code, categoryId, sellingPrice, status, hpp, createdAt, updatedAt]
+
+    ProductInput:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        categoryId:
+          type: integer
+        description:
+          type: string
+        sellingPrice:
+          type: number
+        status:
+          type: string
+          enum: [active, inactive]
+      required: [name, code, categoryId, sellingPrice]
+
+    ProductUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        categoryId:
+          type: integer
+        description:
+          type: string
+        sellingPrice:
+          type: number
+        status:
+          type: string
+          enum: [active, inactive]
+
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        unit:
+          type: string
+        purchasePrice:
+          type: number
+        currentStock:
+          type: number
+        minimumStock:
+          type: number
+        stockStatus:
+          type: string
+          enum: [in_stock, low_stock, out_of_stock]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, name, unit, purchasePrice, currentStock, minimumStock, stockStatus, createdAt, updatedAt]
+
+    IngredientInput:
+      type: object
+      properties:
+        name:
+          type: string
+        unit:
+          type: string
+        purchasePrice:
+          type: number
+        currentStock:
+          type: number
+        minimumStock:
+          type: number
+      required: [name, unit, purchasePrice]
+
+    IngredientUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        unit:
+          type: string
+        purchasePrice:
+          type: number
+        currentStock:
+          type: number
+        minimumStock:
+          type: number
+
+    StockMovement:
+      type: object
+      properties:
+        id:
+          type: integer
+        ingredientId:
+          type: integer
+        ingredientName:
+          type: string
+        unit:
+          type: string
+        movementType:
+          type: string
+          enum: [in, out, adjustment, opname]
+        quantity:
+          type: number
+        previousStock:
+          type: number
+        newStock:
+          type: number
+        notes:
+          type: ["string", "null"]
+        userId:
+          type: integer
+        userName:
+          type: string
+        createdAt:
+          type: string
+      required: [id, ingredientId, ingredientName, unit, movementType, quantity, previousStock, newStock, userId, userName, createdAt]
+
+    StockMovementInput:
+      type: object
+      properties:
+        ingredientId:
+          type: integer
+        movementType:
+          type: string
+          enum: [in, out, adjustment, opname]
+        quantity:
+          type: number
+        notes:
+          type: string
+      required: [ingredientId, movementType, quantity]
+
+    RecipeItem:
+      type: object
+      properties:
+        ingredientId:
+          type: integer
+        ingredientName:
+          type: string
+        unit:
+          type: string
+        quantity:
+          type: number
+        cost:
+          type: number
+      required: [ingredientId, ingredientName, unit, quantity, cost]
+
+    Recipe:
+      type: object
+      properties:
+        productId:
+          type: integer
+        productName:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecipeItem"
+        totalHpp:
+          type: number
+      required: [productId, productName, items, totalHpp]
+
+    RecipeItemInput:
+      type: object
+      properties:
+        ingredientId:
+          type: integer
+        quantity:
+          type: number
+      required: [ingredientId, quantity]
+
+    RecipeInput:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecipeItemInput"
+      required: [items]
+
+    ProfitAnalysisItem:
+      type: object
+      properties:
+        productId:
+          type: integer
+        productName:
+          type: string
+        productCode:
+          type: string
+        categoryName:
+          type: ["string", "null"]
+        sellingPrice:
+          type: number
+        hpp:
+          type: number
+        profit:
+          type: number
+        marginPercentage:
+          type: number
+        status:
+          type: string
+      required: [productId, productName, productCode, sellingPrice, hpp, profit, marginPercentage, status]
 
     StoreSettingsUpdate:
       type: object

@@ -13,16 +13,22 @@ import Users from "@/pages/users";
 import Roles from "@/pages/roles";
 import ChangePassword from "@/pages/change-password";
 import StoreSettings from "@/pages/store-settings";
+import Categories from "@/pages/categories";
+import Products from "@/pages/products";
+import Ingredients from "@/pages/ingredients";
+import StockMovements from "@/pages/stock-movements";
+import Recipes from "@/pages/recipes";
+import ProfitAnalysis from "@/pages/profit-analysis";
 
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ component: Component }: { component: React.ComponentType<any> }) => {
   const { user, isLoading } = useAuth();
-  
+
   if (isLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading session...</div>;
   }
-  
+
   if (!user) {
     return <Redirect to="/login" />;
   }
@@ -50,6 +56,20 @@ function Router() {
       <Route path="/roles"><ProtectedRoute component={Roles} /></Route>
       <Route path="/settings/password"><ProtectedRoute component={ChangePassword} /></Route>
       <Route path="/admin/store-settings"><ProtectedRoute component={StoreSettings} /></Route>
+
+      {/* Products module */}
+      <Route path="/products/categories"><ProtectedRoute component={Categories} /></Route>
+      <Route path="/products/ingredients"><ProtectedRoute component={Ingredients} /></Route>
+      <Route path="/products/recipes"><ProtectedRoute component={Recipes} /></Route>
+      <Route path="/products"><ProtectedRoute component={Products} /></Route>
+
+      {/* Inventory */}
+      <Route path="/inventory/stock"><ProtectedRoute component={Ingredients} /></Route>
+      <Route path="/inventory/movements"><ProtectedRoute component={StockMovements} /></Route>
+
+      {/* Reports */}
+      <Route path="/reports/profit"><ProtectedRoute component={ProfitAnalysis} /></Route>
+
       <Route component={NotFound} />
     </Switch>
   );

@@ -137,6 +137,230 @@ export interface StoreSettings {
   updatedAt: string;
 }
 
+export type CategoryStatus = typeof CategoryStatus[keyof typeof CategoryStatus];
+
+
+export const CategoryStatus = {
+  active: 'active',
+  inactive: 'inactive',
+} as const;
+
+export interface Category {
+  id: number;
+  name: string;
+  /** @nullable */
+  description?: string | null;
+  status: CategoryStatus;
+  productCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type CategoryInputStatus = typeof CategoryInputStatus[keyof typeof CategoryInputStatus];
+
+
+export const CategoryInputStatus = {
+  active: 'active',
+  inactive: 'inactive',
+} as const;
+
+export interface CategoryInput {
+  name: string;
+  description?: string;
+  status?: CategoryInputStatus;
+}
+
+export type CategoryUpdateStatus = typeof CategoryUpdateStatus[keyof typeof CategoryUpdateStatus];
+
+
+export const CategoryUpdateStatus = {
+  active: 'active',
+  inactive: 'inactive',
+} as const;
+
+export interface CategoryUpdate {
+  name?: string;
+  description?: string;
+  status?: CategoryUpdateStatus;
+}
+
+export type ProductStatus = typeof ProductStatus[keyof typeof ProductStatus];
+
+
+export const ProductStatus = {
+  active: 'active',
+  inactive: 'inactive',
+} as const;
+
+export interface Product {
+  id: number;
+  name: string;
+  code: string;
+  categoryId: number;
+  /** @nullable */
+  categoryName?: string | null;
+  /** @nullable */
+  description?: string | null;
+  sellingPrice: number;
+  /** @nullable */
+  imageUrl?: string | null;
+  status: ProductStatus;
+  hpp: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ProductInputStatus = typeof ProductInputStatus[keyof typeof ProductInputStatus];
+
+
+export const ProductInputStatus = {
+  active: 'active',
+  inactive: 'inactive',
+} as const;
+
+export interface ProductInput {
+  name: string;
+  code: string;
+  categoryId: number;
+  description?: string;
+  sellingPrice: number;
+  status?: ProductInputStatus;
+}
+
+export type ProductUpdateStatus = typeof ProductUpdateStatus[keyof typeof ProductUpdateStatus];
+
+
+export const ProductUpdateStatus = {
+  active: 'active',
+  inactive: 'inactive',
+} as const;
+
+export interface ProductUpdate {
+  name?: string;
+  code?: string;
+  categoryId?: number;
+  description?: string;
+  sellingPrice?: number;
+  status?: ProductUpdateStatus;
+}
+
+export type IngredientStockStatus = typeof IngredientStockStatus[keyof typeof IngredientStockStatus];
+
+
+export const IngredientStockStatus = {
+  in_stock: 'in_stock',
+  low_stock: 'low_stock',
+  out_of_stock: 'out_of_stock',
+} as const;
+
+export interface Ingredient {
+  id: number;
+  name: string;
+  unit: string;
+  purchasePrice: number;
+  currentStock: number;
+  minimumStock: number;
+  stockStatus: IngredientStockStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IngredientInput {
+  name: string;
+  unit: string;
+  purchasePrice: number;
+  currentStock?: number;
+  minimumStock?: number;
+}
+
+export interface IngredientUpdate {
+  name?: string;
+  unit?: string;
+  purchasePrice?: number;
+  currentStock?: number;
+  minimumStock?: number;
+}
+
+export type StockMovementMovementType = typeof StockMovementMovementType[keyof typeof StockMovementMovementType];
+
+
+export const StockMovementMovementType = {
+  in: 'in',
+  out: 'out',
+  adjustment: 'adjustment',
+  opname: 'opname',
+} as const;
+
+export interface StockMovement {
+  id: number;
+  ingredientId: number;
+  ingredientName: string;
+  unit: string;
+  movementType: StockMovementMovementType;
+  quantity: number;
+  previousStock: number;
+  newStock: number;
+  /** @nullable */
+  notes?: string | null;
+  userId: number;
+  userName: string;
+  createdAt: string;
+}
+
+export type StockMovementInputMovementType = typeof StockMovementInputMovementType[keyof typeof StockMovementInputMovementType];
+
+
+export const StockMovementInputMovementType = {
+  in: 'in',
+  out: 'out',
+  adjustment: 'adjustment',
+  opname: 'opname',
+} as const;
+
+export interface StockMovementInput {
+  ingredientId: number;
+  movementType: StockMovementInputMovementType;
+  quantity: number;
+  notes?: string;
+}
+
+export interface RecipeItem {
+  ingredientId: number;
+  ingredientName: string;
+  unit: string;
+  quantity: number;
+  cost: number;
+}
+
+export interface Recipe {
+  productId: number;
+  productName: string;
+  items: RecipeItem[];
+  totalHpp: number;
+}
+
+export interface RecipeItemInput {
+  ingredientId: number;
+  quantity: number;
+}
+
+export interface RecipeInput {
+  items: RecipeItemInput[];
+}
+
+export interface ProfitAnalysisItem {
+  productId: number;
+  productName: string;
+  productCode: string;
+  /** @nullable */
+  categoryName?: string | null;
+  sellingPrice: number;
+  hpp: number;
+  profit: number;
+  marginPercentage: number;
+  status: string;
+}
+
 export interface StoreSettingsUpdate {
   storeName?: string;
   address?: string;
