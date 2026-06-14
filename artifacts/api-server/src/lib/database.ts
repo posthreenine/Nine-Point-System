@@ -1,5 +1,6 @@
 import Database from "better-sqlite3";
 import path from "path";
+import fs from "fs";
 import bcrypt from "bcryptjs";
 import { logger } from "./logger";
 
@@ -8,10 +9,13 @@ const workspaceRoot = process.cwd().endsWith(path.join("artifacts", "api-server"
   : process.cwd();
 
 const dataDir = path.resolve(workspaceRoot, "artifacts/api-server/data");
+export const uploadsDir = path.resolve(workspaceRoot, "artifacts/api-server/uploads");
 
-import fs from "fs";
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
+}
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
 const dbPath = path.resolve(dataDir, "pos.db");
@@ -42,8 +46,28 @@ function initDatabase(): void {
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS store_settings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      store_name TEXT NOT NULL DEFAULT 'THREE NINE COFFEE & EATERY',
+      logo TEXT,
+      address TEXT,
+      phone_number TEXT,
+      email TEXT,
+      instagram TEXT,
+      facebook TEXT,
+      website TEXT,
+      tax_percentage REAL NOT NULL DEFAULT 11,
+      service_charge_percentage REAL NOT NULL DEFAULT 5,
+      currency_code TEXT NOT NULL DEFAULT 'IDR',
+      currency_symbol TEXT NOT NULL DEFAULT 'Rp',
+      receipt_footer TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `);
 
+  // Seed roles
   const roleCount = (db.prepare("SELECT COUNT(*) as count FROM roles").get() as { count: number }).count;
   if (roleCount === 0) {
     const insertRole = db.prepare(
@@ -56,6 +80,7 @@ function initDatabase(): void {
     logger.info("Seeded default roles");
   }
 
+  // Seed admin user
   const userCount = (db.prepare("SELECT COUNT(*) as count FROM users").get() as { count: number }).count;
   if (userCount === 0) {
     const ownerRole = db.prepare("SELECT id FROM roles WHERE name = 'Owner'").get() as { id: number } | undefined;
@@ -66,6 +91,29 @@ function initDatabase(): void {
       ).run("admin", hash, "Administrator", ownerRole.id, 1);
       logger.info("Seeded default admin user");
     }
+  }
+
+  // Seed store settings
+  const settingsCount = (db.prepare("SELECT COUNT(*) as count FROM store_settings").get() as { count: number }).count;
+  if (settingsCount === 0) {
+    db.prepare(`
+      INSERT INTO store_settings (
+        store_name, address, phone_number, instagram, website,
+        tax_percentage, service_charge_percentage, currency_code, currency_symbol, receipt_footer
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      "THREE NINE COFFEE & EATERY",
+      "Jl. Placeholder Address",
+      "+62",
+      "@threeninecoffee",
+      "https://threeninecoffee.com",
+      11,
+      5,
+      "IDR",
+      "Rp",
+      "Thank You For Visiting THREE NINE COFFEE & EATERY"
+    );
+    logger.info("Seeded default store settings");
   }
 }
 

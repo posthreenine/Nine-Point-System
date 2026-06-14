@@ -31,6 +31,8 @@ import type {
   Role,
   RoleInput,
   RoleUpdate,
+  StoreSettings,
+  StoreSettingsUpdate,
   User,
   UserInput,
   UserProfile,
@@ -1219,6 +1221,224 @@ export const useDeleteRole = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getDeleteRoleMutationOptions(options));
+    }
+
+export const getGetStoreSettingsUrl = () => {
+
+
+
+
+  return `/api/store-settings`
+}
+
+/**
+ * @summary Get store settings (public)
+ */
+export const getStoreSettings = async ( options?: RequestInit): Promise<StoreSettings> => {
+
+  return customFetch<StoreSettings>(getGetStoreSettingsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetStoreSettingsQueryKey = () => {
+    return [
+    `/api/store-settings`
+    ] as const;
+    }
+
+
+export const getGetStoreSettingsQueryOptions = <TData = Awaited<ReturnType<typeof getStoreSettings>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getStoreSettings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetStoreSettingsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStoreSettings>>> = ({ signal }) => getStoreSettings({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getStoreSettings>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetStoreSettingsQueryResult = NonNullable<Awaited<ReturnType<typeof getStoreSettings>>>
+export type GetStoreSettingsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get store settings (public)
+ */
+
+export function useGetStoreSettings<TData = Awaited<ReturnType<typeof getStoreSettings>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getStoreSettings>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetStoreSettingsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getUpdateStoreSettingsUrl = () => {
+
+
+
+
+  return `/api/store-settings`
+}
+
+/**
+ * @summary Update store settings (Owner only)
+ */
+export const updateStoreSettings = async (storeSettingsUpdate: StoreSettingsUpdate, options?: RequestInit): Promise<StoreSettings> => {
+
+  return customFetch<StoreSettings>(getUpdateStoreSettingsUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      storeSettingsUpdate,)
+  }
+);}
+
+
+
+
+export const getUpdateStoreSettingsMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStoreSettings>>, TError,{data: BodyType<StoreSettingsUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateStoreSettings>>, TError,{data: BodyType<StoreSettingsUpdate>}, TContext> => {
+
+const mutationKey = ['updateStoreSettings'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateStoreSettings>>, {data: BodyType<StoreSettingsUpdate>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateStoreSettings(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateStoreSettingsMutationResult = NonNullable<Awaited<ReturnType<typeof updateStoreSettings>>>
+    export type UpdateStoreSettingsMutationBody = BodyType<StoreSettingsUpdate>
+    export type UpdateStoreSettingsMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Update store settings (Owner only)
+ */
+export const useUpdateStoreSettings = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStoreSettings>>, TError,{data: BodyType<StoreSettingsUpdate>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateStoreSettings>>,
+        TError,
+        {data: BodyType<StoreSettingsUpdate>},
+        TContext
+      > => {
+      return useMutation(getUpdateStoreSettingsMutationOptions(options));
+    }
+
+export const getDeleteStoreLogoUrl = () => {
+
+
+
+
+  return `/api/store-settings/logo`
+}
+
+/**
+ * @summary Remove store logo (Owner only)
+ */
+export const deleteStoreLogo = async ( options?: RequestInit): Promise<MessageResponse> => {
+
+  return customFetch<MessageResponse>(getDeleteStoreLogoUrl(),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeleteStoreLogoMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStoreLogo>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteStoreLogo>>, TError,void, TContext> => {
+
+const mutationKey = ['deleteStoreLogo'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteStoreLogo>>, void> = () => {
+
+
+          return  deleteStoreLogo(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteStoreLogoMutationResult = NonNullable<Awaited<ReturnType<typeof deleteStoreLogo>>>
+
+    export type DeleteStoreLogoMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Remove store logo (Owner only)
+ */
+export const useDeleteStoreLogo = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStoreLogo>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteStoreLogo>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getDeleteStoreLogoMutationOptions(options));
     }
 
 export const getGetDashboardStatsUrl = () => {

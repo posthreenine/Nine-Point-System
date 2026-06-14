@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { StoreSettingsProvider } from "@/hooks/use-store-settings";
 import { Layout } from "@/components/layout";
 import NotFound from "@/pages/not-found";
 
@@ -11,6 +12,7 @@ import Dashboard from "@/pages/dashboard";
 import Users from "@/pages/users";
 import Roles from "@/pages/roles";
 import ChangePassword from "@/pages/change-password";
+import StoreSettings from "@/pages/store-settings";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +49,7 @@ function Router() {
       <Route path="/users"><ProtectedRoute component={Users} /></Route>
       <Route path="/roles"><ProtectedRoute component={Roles} /></Route>
       <Route path="/settings/password"><ProtectedRoute component={ChangePassword} /></Route>
+      <Route path="/admin/store-settings"><ProtectedRoute component={StoreSettings} /></Route>
       <Route component={NotFound} />
     </Switch>
   );
@@ -57,9 +60,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <AuthProvider>
-            <Router />
-          </AuthProvider>
+          <StoreSettingsProvider>
+            <AuthProvider>
+              <Router />
+            </AuthProvider>
+          </StoreSettingsProvider>
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

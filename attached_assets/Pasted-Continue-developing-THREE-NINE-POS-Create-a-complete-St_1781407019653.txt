@@ -1,0 +1,220 @@
+Continue developing THREE NINE POS.
+
+Create a complete Store Settings Module integrated with the existing authentication system.
+
+SYSTEM REQUIREMENTS
+
+Create a database table named:
+
+store_settings
+
+Columns:
+
+- id (Primary Key)
+- store_name
+- logo
+- address
+- phone_number
+- email
+- instagram
+- facebook
+- website
+- tax_percentage
+- service_charge_percentage
+- currency_code
+- currency_symbol
+- receipt_footer
+- created_at
+- updated_at
+
+DEFAULT DATA
+
+Automatically seed default settings:
+
+Store Name:
+THREE NINE COFFEE & EATERY
+
+Address:
+Jl. Placeholder Address
+
+Phone:
++62
+
+Instagram:
+@threeninecoffee
+
+Website:
+https://threeninecoffee.com
+
+Tax Percentage:
+11
+
+Service Charge:
+5
+
+Currency Code:
+IDR
+
+Currency Symbol:
+Rp
+
+Receipt Footer:
+Thank You For Visiting THREE NINE COFFEE & EATERY
+
+ACCESS CONTROL
+
+Only Owner role can:
+
+- View Store Settings
+- Edit Store Settings
+- Upload Logo
+
+Manager, Cashier and Kitchen roles cannot access this page.
+
+SIDEBAR
+
+Add a new menu:
+
+Administration
+ └ Store Settings
+
+UI PAGE
+
+Create a professional responsive settings page.
+
+Section 1:
+GENERAL INFORMATION
+
+Fields:
+- Store Name
+- Address
+- Phone Number
+- Email
+
+Section 2:
+BRANDING
+
+Fields:
+- Logo Upload
+- Logo Preview
+
+Accepted Formats:
+- JPG
+- PNG
+- WEBP
+
+Features:
+- Preview Before Save
+- Replace Existing Logo
+- Remove Logo
+
+Section 3:
+SOCIAL MEDIA
+
+Fields:
+- Instagram
+- Facebook
+- Website
+
+Section 4:
+TAX AND SERVICE
+
+Fields:
+- Tax Percentage
+- Service Charge Percentage
+
+Show example:
+
+Tax: 11%
+Service Charge: 5%
+
+Section 5:
+CURRENCY
+
+Fields:
+- Currency Code
+- Currency Symbol
+
+Default:
+IDR
+Rp
+
+Section 6:
+RECEIPT SETTINGS
+
+Fields:
+- Receipt Footer Message
+
+API ENDPOINTS
+
+Create:
+
+GET /api/store-settings
+
+POST /api/store-settings
+
+PUT /api/store-settings
+
+VALIDATION
+
+Store Name:
+Required
+
+Phone Number:
+Required
+
+Tax Percentage:
+0-100
+
+Service Charge:
+0-100
+
+Website:
+Valid URL
+
+Instagram:
+Optional
+
+DISPLAY SETTINGS GLOBALLY
+
+Display store information in:
+
+1. Login Page
+2. Dashboard Header
+3. Sidebar Header
+4. Future Receipt Templates
+
+DATABASE
+
+Use SQLite.
+
+Create migration automatically.
+
+If no settings record exists:
+Automatically create default settings.
+
+UI REQUIREMENTS
+
+Use Tailwind CSS.
+
+Create:
+
+- Modern card layout
+- Responsive design
+- Save button
+- Cancel button
+- Success notification
+- Error notification
+
+TESTING
+
+Before finishing:
+
+- Verify database table exists
+- Verify APIs work
+- Verify Owner access only
+- Verify logo upload works
+- Verify settings save correctly
+- Fix all build errors automatically
+
+Generate complete backend, frontend, API routes, controllers, database schema, validation, and responsive UI.

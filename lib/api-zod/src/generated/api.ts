@@ -256,6 +256,75 @@ export const DeleteRoleResponse = zod.object({
 
 
 /**
+ * @summary Get store settings (public)
+ */
+export const GetStoreSettingsResponse = zod.object({
+  "id": zod.number(),
+  "storeName": zod.string(),
+  "logoUrl": zod.string().nullish(),
+  "address": zod.string().nullish(),
+  "phoneNumber": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "instagram": zod.string().nullish(),
+  "facebook": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "taxPercentage": zod.number(),
+  "serviceChargePercentage": zod.number(),
+  "currencyCode": zod.string(),
+  "currencySymbol": zod.string(),
+  "receiptFooter": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Update store settings (Owner only)
+ */
+export const UpdateStoreSettingsBody = zod.object({
+  "storeName": zod.string().optional(),
+  "address": zod.string().optional(),
+  "phoneNumber": zod.string().optional(),
+  "email": zod.string().optional(),
+  "instagram": zod.string().optional(),
+  "facebook": zod.string().optional(),
+  "website": zod.string().optional(),
+  "taxPercentage": zod.number().optional(),
+  "serviceChargePercentage": zod.number().optional(),
+  "currencyCode": zod.string().optional(),
+  "currencySymbol": zod.string().optional(),
+  "receiptFooter": zod.string().optional()
+})
+
+export const UpdateStoreSettingsResponse = zod.object({
+  "id": zod.number(),
+  "storeName": zod.string(),
+  "logoUrl": zod.string().nullish(),
+  "address": zod.string().nullish(),
+  "phoneNumber": zod.string().nullish(),
+  "email": zod.string().nullish(),
+  "instagram": zod.string().nullish(),
+  "facebook": zod.string().nullish(),
+  "website": zod.string().nullish(),
+  "taxPercentage": zod.number(),
+  "serviceChargePercentage": zod.number(),
+  "currencyCode": zod.string(),
+  "currencySymbol": zod.string(),
+  "receiptFooter": zod.string().nullish(),
+  "createdAt": zod.string(),
+  "updatedAt": zod.string()
+})
+
+
+/**
+ * @summary Remove store logo (Owner only)
+ */
+export const DeleteStoreLogoResponse = zod.object({
+  "message": zod.string()
+})
+
+
+/**
  * @summary Get dashboard overview stats
  */
 export const GetDashboardStatsResponse = zod.object({

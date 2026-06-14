@@ -110,3 +110,45 @@ export interface DashboardStats {
   usersByRole: RoleCount[];
 }
 
+export interface StoreSettings {
+  id: number;
+  storeName: string;
+  /** @nullable */
+  logoUrl?: string | null;
+  /** @nullable */
+  address?: string | null;
+  /** @nullable */
+  phoneNumber?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  instagram?: string | null;
+  /** @nullable */
+  facebook?: string | null;
+  /** @nullable */
+  website?: string | null;
+  taxPercentage: number;
+  serviceChargePercentage: number;
+  currencyCode: string;
+  currencySymbol: string;
+  /** @nullable */
+  receiptFooter?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StoreSettingsUpdate {
+  storeName?: string;
+  address?: string;
+  phoneNumber?: string;
+  email?: string;
+  instagram?: string;
+  facebook?: string;
+  website?: string;
+  taxPercentage?: number;
+  serviceChargePercentage?: number;
+  currencyCode?: string;
+  currencySymbol?: string;
+  receiptFooter?: string;
+}
+

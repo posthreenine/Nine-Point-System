@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
+import { useStoreSettings } from "@/hooks/use-store-settings";
 import { useLogin } from "@workspace/api-client-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,32 +19,28 @@ const loginSchema = z.object({
 
 export default function Login() {
   const { user, login } = useAuth();
+  const { settings } = useStoreSettings();
   const [, setLocation] = useLocation();
   const loginMutation = useLogin();
   const { toast } = useToast();
 
+  const storeName = settings?.storeName ?? "THREE NINE";
+  const logoUrl = settings?.logoUrl ?? null;
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-    },
+    defaultValues: { username: "", password: "" },
   });
 
   useEffect(() => {
-    if (user) {
-      setLocation("/dashboard");
-    }
+    if (user) setLocation("/dashboard");
   }, [user, setLocation]);
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     try {
       const response = await loginMutation.mutateAsync({ data: values });
       login(response.token, response.user);
-      toast({
-        title: "Login successful",
-        description: "Welcome to THREE NINE POS",
-      });
+      toast({ title: "Login successful", description: `Welcome to ${storeName}` });
       setLocation("/dashboard");
     } catch (error: any) {
       toast({
@@ -57,21 +54,40 @@ export default function Login() {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-900 p-4">
       <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-black tracking-tighter text-white">THREE NINE</h1>
-          <p className="text-slate-400 mt-2 font-mono tracking-widest text-sm">POINT OF SALE SYSTEM</p>
+        <div className="text-center flex flex-col items-center gap-3">
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={storeName}
+              className="h-16 w-16 rounded-2xl object-contain bg-white p-1 shadow-lg"
+            />
+          ) : (
+            <div className="h-16 w-16 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
+              <span className="text-white font-black text-2xl">
+                {storeName.charAt(0)}
+              </span>
+            </div>
+          )}
+          <div>
+            <h1 className="text-3xl font-black tracking-tighter text-white">
+              {storeName}
+            </h1>
+            <p className="text-slate-400 mt-1 font-mono tracking-widest text-xs">
+              POINT OF SALE SYSTEM
+            </p>
+          </div>
         </div>
 
         <Card className="border-slate-800 shadow-2xl bg-white">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Operator Login</CardTitle>
-            <CardDescription className="text-center">
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-xl font-bold text-center">Operator Login</CardTitle>
+            <CardDescription className="text-center text-sm">
               Enter your credentials to access the terminal
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                 <FormField
                   control={form.control}
                   name="username"
@@ -79,7 +95,12 @@ export default function Login() {
                     <FormItem>
                       <FormLabel>Username</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter username" {...field} className="h-12" />
+                        <Input
+                          placeholder="Enter username"
+                          {...field}
+                          className="h-11"
+                          autoComplete="username"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -92,15 +113,21 @@ export default function Login() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Enter password" {...field} className="h-12" />
+                        <Input
+                          type="password"
+                          placeholder="Enter password"
+                          {...field}
+                          className="h-11"
+                          autoComplete="current-password"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 text-md font-bold" 
+                <Button
+                  type="submit"
+                  className="w-full h-11 text-sm font-bold tracking-wide"
                   disabled={loginMutation.isPending}
                 >
                   {loginMutation.isPending ? "AUTHENTICATING..." : "LOGIN TO SYSTEM"}

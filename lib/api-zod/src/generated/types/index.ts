@@ -18,6 +18,8 @@ export * from './role';
 export * from './roleCount';
 export * from './roleInput';
 export * from './roleUpdate';
+export * from './storeSettings';
+export * from './storeSettingsUpdate';
 export * from './user';
 export * from './userInput';
 export * from './userProfile';
