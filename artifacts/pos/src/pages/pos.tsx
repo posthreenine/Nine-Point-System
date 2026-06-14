@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { ReceiptModal } from "@/components/receipt-modal";
@@ -78,6 +79,7 @@ export default function POS() {
 
   const [completedTx, setCompletedTx] = useState<TransactionDetail | null>(null);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
+  const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);
 
   const sym = settings?.currencySymbol ?? "Rp";
   const taxPct = settings?.taxPercentage ?? 0;
@@ -193,7 +195,7 @@ export default function POS() {
   }
 
   return (
-    <div className="flex h-full overflow-hidden -m-5 md:-m-8">
+    <div className="flex h-full overflow-hidden">
       {/* Category Sidebar */}
       <aside className="hidden lg:flex flex-col w-44 bg-sidebar border-r border-sidebar-border overflow-y-auto shrink-0">
         <div className="p-3 border-b border-sidebar-border">
@@ -314,10 +316,33 @@ export default function POS() {
             </div>
           )}
         </div>
+
+        {/* Mobile cart bar — visible below lg */}
+        <div className="lg:hidden shrink-0 border-t bg-card px-4 py-3 flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold">
+              {cartItems.length === 0 ? "Cart is empty" : `${cartItems.reduce((s, i) => s + i.quantity, 0)} item(s)`}
+            </p>
+            {cartItems.length > 0 && (
+              <p className="text-xs text-muted-foreground">{fmt(total)}</p>
+            )}
+          </div>
+          <Button
+            className="shrink-0 h-10 px-5 font-bold gap-2"
+            onClick={() => setIsMobileCartOpen(true)}
+            disabled={cartItems.length === 0}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            View Cart
+            {cartItems.length > 0 && (
+              <Badge variant="secondary" className="ml-1 h-5 min-w-5 text-xs bg-white/20 text-primary-foreground">{cartItems.length}</Badge>
+            )}
+          </Button>
+        </div>
       </div>
 
-      {/* Cart Panel */}
-      <aside className="w-72 xl:w-80 shrink-0 flex flex-col border-l bg-card overflow-hidden">
+      {/* Desktop Cart Panel — hidden below lg */}
+      <aside className="hidden lg:flex flex-col w-72 xl:w-80 shrink-0 border-l bg-card overflow-hidden">
         <div className="shrink-0 px-4 py-3 border-b flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-primary" />
@@ -425,6 +450,115 @@ export default function POS() {
           </Button>
         </div>
       </aside>
+
+      {/* Mobile Cart Sheet — visible below lg */}
+      <Sheet open={isMobileCartOpen} onOpenChange={setIsMobileCartOpen}>
+        <SheetContent side="bottom" className="h-[85vh] p-0 flex flex-col rounded-t-2xl overflow-hidden">
+          {/* Sheet cart header */}
+          <div className="shrink-0 px-4 py-3 border-b flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <ShoppingCart className="h-5 w-5 text-primary" />
+              <span className="font-semibold">Order</span>
+              {cartItems.length > 0 && <Badge variant="secondary" className="text-xs">{cartItems.length}</Badge>}
+            </div>
+            {cartItems.length > 0 && (
+              <button onClick={clearOrder} className="text-xs text-muted-foreground hover:text-destructive transition-colors">Clear</button>
+            )}
+          </div>
+          {/* Customer info */}
+          <div className="px-3 py-2 border-b bg-muted/30 shrink-0">
+            <Input
+              placeholder="Customer name (optional)"
+              className="h-8 text-xs"
+              value={customerName}
+              onChange={e => setCustomerName(e.target.value)}
+            />
+            {orderType === "dine_in" && selectedTable && (
+              <p className="text-xs text-muted-foreground mt-1.5">📍 {selectedTable.name}</p>
+            )}
+          </div>
+          {/* Cart items */}
+          <div className="flex-1 overflow-y-auto">
+            {cartItems.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
+                <ShoppingCart className="h-8 w-8 mb-2 opacity-30" />
+                <p className="text-sm">Cart is empty</p>
+                <p className="text-xs mt-1 opacity-70">Tap a product to add</p>
+              </div>
+            ) : (
+              <div className="p-2 space-y-2">
+                {cartItems.map(item => (
+                  <div key={item.productId} className="bg-background rounded-lg border p-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold truncate">{item.name}</p>
+                        <p className="text-xs text-primary font-medium">{fmt(item.price)}</p>
+                      </div>
+                      <button onClick={() => removeItem(item.productId)} className="text-muted-foreground hover:text-destructive shrink-0 mt-0.5">
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={() => updateQty(item.productId, -1)} className="h-6 w-6 rounded-full border flex items-center justify-center hover:bg-destructive/10 hover:border-destructive hover:text-destructive transition-colors">
+                          <Minus className="h-3 w-3" />
+                        </button>
+                        <span className="text-sm font-bold w-5 text-center">{item.quantity}</span>
+                        <button onClick={() => updateQty(item.productId, 1)} className="h-6 w-6 rounded-full border flex items-center justify-center hover:bg-primary/10 hover:border-primary hover:text-primary transition-colors">
+                          <Plus className="h-3 w-3" />
+                        </button>
+                      </div>
+                      <span className="text-xs font-semibold">{fmt(item.price * item.quantity)}</span>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Notes…"
+                      value={item.notes}
+                      onChange={e => updateNotes(item.productId, e.target.value)}
+                      className="mt-1.5 w-full text-xs border border-border rounded px-2 py-1 bg-muted/50 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* Totals + Pay */}
+          <div className="shrink-0 border-t p-3 space-y-2 bg-card">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground flex-1">Discount</span>
+              <Input
+                type="text"
+                inputMode="numeric"
+                className="h-7 w-32 text-xs text-right"
+                placeholder="0"
+                value={discountInput}
+                onChange={e => {
+                  setDiscountInput(e.target.value);
+                  const v = parseFloat(e.target.value.replace(/\D/g, "")) || 0;
+                  setDiscountAmount(v);
+                }}
+              />
+            </div>
+            <div className="space-y-1 text-xs text-muted-foreground">
+              <div className="flex justify-between"><span>Subtotal</span><span>{fmt(subtotal)}</span></div>
+              {discountAmount > 0 && <div className="flex justify-between text-red-500"><span>Discount</span><span>- {fmt(discountAmount)}</span></div>}
+              <div className="flex justify-between"><span>Tax ({taxPct}%)</span><span>{fmt(taxAmount)}</span></div>
+              <div className="flex justify-between"><span>Service ({svcPct}%)</span><span>{fmt(svcAmount)}</span></div>
+            </div>
+            <div className="flex justify-between font-bold text-base border-t pt-2">
+              <span>Total</span><span className="text-primary">{fmt(total)}</span>
+            </div>
+            <Button
+              className="w-full h-12 text-base font-bold"
+              disabled={cartItems.length === 0}
+              onClick={() => { setIsMobileCartOpen(false); setTimeout(() => setIsPayOpen(true), 150); }}
+            >
+              <CreditCard className="h-5 w-5 mr-2" />
+              Pay Now
+            </Button>
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* Payment Modal */}
       <Dialog open={isPayOpen} onOpenChange={v => !v && !isProcessing && setIsPayOpen(false)}>

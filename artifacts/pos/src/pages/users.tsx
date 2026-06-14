@@ -243,7 +243,7 @@ export default function UsersPage() {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-3xl font-bold tracking-tight">Users</h1>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">Users</h1>
         <Button onClick={() => { form.reset({ username: "", fullName: "", email: "", roleId: 0, isActive: true, password: "" }); setIsCreateOpen(true); }}>
           <Plus className="mr-2 h-4 w-4" /> New User
         </Button>

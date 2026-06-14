@@ -198,7 +198,7 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div className="flex h-screen w-full bg-background overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 bg-sidebar border-r border-sidebar-border h-full">
+      <aside className="hidden lg:flex flex-col w-64 bg-sidebar border-r border-sidebar-border h-full">
         <SidebarHeader />
         <nav className="flex-1 px-4 py-4 overflow-y-auto">
           <NavLinks />
@@ -220,7 +220,7 @@ export function Layout({ children }: LayoutProps) {
         {/* Header */}
         <header className="h-14 flex items-center justify-between px-4 border-b bg-card shrink-0">
           <div className="flex items-center gap-3">
-            <div className="md:hidden">
+            <div className="lg:hidden">
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="-ml-2">
@@ -245,7 +245,7 @@ export function Layout({ children }: LayoutProps) {
                 </SheetContent>
               </Sheet>
             </div>
-            <div className="hidden md:block">
+            <div className="hidden lg:block">
               <span className="text-sm font-semibold text-muted-foreground">{storeName}</span>
             </div>
           </div>

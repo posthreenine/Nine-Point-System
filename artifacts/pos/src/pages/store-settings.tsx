@@ -192,7 +192,7 @@ export default function StoreSettings() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold tracking-tight">Store Settings</h1>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">Store Settings</h1>
         <div className="grid gap-6">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-48 rounded-lg bg-slate-100 animate-pulse" />
@@ -208,7 +208,7 @@ export default function StoreSettings() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">Store Settings</h1>
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900">Store Settings</h1>
           <p className="text-muted-foreground mt-1">Manage your store profile, branding, and configuration.</p>
         </div>
       </div>

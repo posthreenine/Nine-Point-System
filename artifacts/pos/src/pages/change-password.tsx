@@ -56,7 +56,7 @@ export default function ChangePasswordPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Security Settings</h1>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">Security Settings</h1>
         <p className="text-muted-foreground mt-1">Manage your account credentials and security preferences.</p>
       </div>
 

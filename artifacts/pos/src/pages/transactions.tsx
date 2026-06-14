@@ -173,7 +173,7 @@ export default function Transactions() {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Transactions</h1>
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">Transactions</h1>
           <p className="text-muted-foreground mt-1">View and manage POS transactions</p>
         </div>
         <Button variant="outline" size="sm" onClick={() => refetch()} className="gap-1.5">

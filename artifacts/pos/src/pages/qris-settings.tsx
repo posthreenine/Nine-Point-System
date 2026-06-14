@@ -99,7 +99,7 @@ export default function QrisSettings() {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-2xl">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">QRIS Settings</h1>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">QRIS Settings</h1>
         <p className="text-muted-foreground mt-1">Configure QRIS payment details for your POS</p>
       </div>
 
