@@ -197,6 +197,7 @@ export interface TransactionItem {
   subtotal: number;
   /** @nullable */
   notes?: string | null;
+  productionStation: string;
 }
 
 export interface Payment {

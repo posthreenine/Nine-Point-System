@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { ReceiptModal } from "@/components/receipt-modal";
+import { PaymentSuccessModal } from "@/components/payment-success-modal";
 import {
   Search, Plus, Minus, Trash2, ShoppingCart, CreditCard,
   Banknote, QrCode, Building2, ChevronDown, Coffee, X,
@@ -78,7 +78,7 @@ export default function POS() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const [completedTx, setCompletedTx] = useState<TransactionDetail | null>(null);
-  const [isReceiptOpen, setIsReceiptOpen] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);
 
   const sym = settings?.currencySymbol ?? "Rp";
@@ -184,7 +184,7 @@ export default function POS() {
 
       setCompletedTx(paid);
       setIsPayOpen(false);
-      setIsReceiptOpen(true);
+      setIsSuccessOpen(true);
       clearOrder();
       toast({ title: `Payment confirmed — ${paid.invoiceNumber}` });
     } catch (err: any) {
@@ -670,9 +670,9 @@ export default function POS() {
 
       {/* Receipt Modal */}
       {completedTx && (
-        <ReceiptModal
-          open={isReceiptOpen}
-          onClose={() => { setIsReceiptOpen(false); setCompletedTx(null); }}
+        <PaymentSuccessModal
+          open={isSuccessOpen}
+          onClose={() => { setIsSuccessOpen(false); setCompletedTx(null); }}
           transaction={completedTx}
         />
       )}

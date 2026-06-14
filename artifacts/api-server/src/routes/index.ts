@@ -15,6 +15,8 @@ import shiftsRouter from "./shifts";
 import tablesRouter from "./tables";
 import transactionsRouter from "./transactions";
 import qrisSettingsRouter from "./qris-settings";
+import printerSettingsRouter from "./printer-settings";
+import printLogsRouter from "./print-logs";
 
 const router: IRouter = Router();
 
@@ -34,5 +36,7 @@ router.use(shiftsRouter);
 router.use(tablesRouter);
 router.use(transactionsRouter);
 router.use(qrisSettingsRouter);
+router.use(printerSettingsRouter);
+router.use(printLogsRouter);
 
 export default router;

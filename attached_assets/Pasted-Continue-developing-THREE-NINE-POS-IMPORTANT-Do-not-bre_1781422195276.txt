@@ -1,0 +1,354 @@
+Continue developing THREE NINE POS.
+
+IMPORTANT:
+
+Do not break existing modules.
+
+Existing modules must remain functional:
+
+- Authentication
+- Roles
+- Dashboard
+- Store Settings
+- Categories
+- Products
+- Ingredients
+- Inventory
+- Recipes
+- HPP
+- POS
+- Transactions
+- QRIS
+- Receipts
+- Reports
+- Shift Management
+- KDS
+
+==================================================
+ADVANCED MULTI PRINTER SYSTEM
+==================================================
+
+OBJECTIVE
+
+Create a complete restaurant printing workflow.
+
+The business uses:
+
+1. Customer Receipt Printer (Bluetooth)
+2. Bar Printer (Minipos)
+3. Kitchen Printer (Minipos)
+
+==================================================
+PRODUCT PRODUCTION STATION
+==================================================
+
+Add field to Products:
+
+Production Station
+
+Options:
+
+- Bar
+- Kitchen
+- Both
+- None
+
+Examples:
+
+Coffee -> Bar
+Tea -> Bar
+Mocktail -> Bar
+Pizza -> Kitchen
+Burger -> Kitchen
+Rice Bowl -> Kitchen
+
+==================================================
+PAYMENT SUCCESS SCREEN
+==================================================
+
+After successful payment display:
+
+PAYMENT SUCCESS
+
+Invoice Number
+
+Total Paid
+
+Actions:
+
+[ Print Receipt ]
+
+[ Print Bar Ticket ]
+
+[ Print Kitchen Ticket ]
+
+[ Print Waiter Copy ]
+
+[ Print Production Tickets ]
+
+[ Print All ]
+
+[ Close ]
+
+==================================================
+PRINT TYPES
+==================================================
+
+1. CUSTOMER RECEIPT
+
+Print all purchased products.
+
+Contains:
+
+- Store Logo
+- Store Name
+- Address
+- Phone
+- Invoice Number
+- Cashier
+- Date Time
+- Items
+- Quantity
+- Price
+- Tax
+- Service Charge
+- Grand Total
+- Payment Method
+- QRIS Reference
+- Footer
+
+==================================================
+
+2. BAR TICKET
+
+Print only:
+
+Products assigned to:
+
+Bar
+or
+Both
+
+Format:
+
+BAR ORDER
+
+Order Number
+Invoice Number
+Table Number
+Time
+
+Items
+Qty
+
+Notes
+
+Prepared By __________
+
+==================================================
+
+3. KITCHEN TICKET
+
+Print only:
+
+Products assigned to:
+
+Kitchen
+or
+Both
+
+Format:
+
+KITCHEN ORDER
+
+Order Number
+Invoice Number
+Table Number
+Time
+
+Items
+Qty
+
+Notes
+
+Prepared By __________
+
+==================================================
+
+4. WAITER COPY
+
+Print all products.
+
+Format:
+
+WAITER COPY
+
+Order Number
+Invoice Number
+Table Number
+Customer Name
+Order Type
+Cashier
+Time
+
+Items
+Qty
+
+Notes
+
+==================================================
+TRANSACTION HISTORY
+==================================================
+
+Add actions:
+
+- View Detail
+- Reprint Receipt
+- Print Bar Ticket
+- Print Kitchen Ticket
+- Print Waiter Copy
+- Print Production Tickets
+- Print All
+- Download PDF
+
+==================================================
+REPRINT MANAGEMENT
+==================================================
+
+Create print log system.
+
+Table:
+
+print_logs
+
+Fields:
+
+- id
+- transaction_id
+- invoice_number
+- print_type
+- printer_name
+- user_id
+- printed_at
+- reprint_count
+
+Track:
+
+- First Print
+- Reprint Count
+
+Display:
+
+Receipt Printed 3 Times
+Bar Ticket Printed 1 Time
+Kitchen Ticket Printed 2 Times
+
+==================================================
+PRINTER MANAGEMENT
+==================================================
+
+Create:
+
+Settings
+→ Printer Management
+
+Printers:
+
+Customer Printer
+
+Fields:
+
+- Name
+- Bluetooth Device Name
+- Active
+
+Bar Printer
+
+Fields:
+
+- Name
+- LAN IP
+- Port
+- Active
+
+Kitchen Printer
+
+Fields:
+
+- Name
+- LAN IP
+- Port
+- Active
+
+==================================================
+KDS INTEGRATION
+==================================================
+
+When Bar Ticket printed:
+
+Create Bar Queue.
+
+When Kitchen Ticket printed:
+
+Create Kitchen Queue.
+
+Update KDS automatically.
+
+==================================================
+ROLE PERMISSIONS
+==================================================
+
+Owner
+
+- Full Access
+
+Manager
+
+- Full Access
+
+Cashier
+
+- Can Print
+- Can Reprint
+
+Kitchen
+
+- Can Reprint Kitchen Ticket Only
+
+Bar
+
+- Can Reprint Bar Ticket Only
+
+==================================================
+RESPONSIVE UI
+==================================================
+
+Optimize for:
+
+- Android Phone
+- iPhone
+- Tablet
+- Laptop
+- Desktop
+
+Add icons to all print buttons.
+
+==================================================
+TESTING
+==================================================
+
+Verify:
+
+- Receipt Printing Works
+- Bar Ticket Works
+- Kitchen Ticket Works
+- Waiter Copy Works
+- Reprint Works
+- Print Logs Work
+- Permissions Work
+- KDS Integration Works
+- Responsive Layout Works
+
+Fix all build errors automatically.
+
+Generate complete backend, frontend, SQLite schema, APIs, print routing logic, printer management UI, print logs and reprint management.

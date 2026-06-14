@@ -11,8 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useToast } from "@/hooks/use-toast";
 import { useStoreSettings } from "@/hooks/use-store-settings";
 import { cn } from "@/lib/utils";
-import { ReceiptModal } from "@/components/receipt-modal";
-import { Search, Receipt, RefreshCw, AlertTriangle, ChevronDown, Filter } from "lucide-react";
+import { PrintTicketsContainer, usePrintTicket, type PrintType } from "@/components/print-tickets";
+import { Search, Receipt, RefreshCw, AlertTriangle, ChevronDown, Filter, Coffee, ChefHat, Users, Printer } from "lucide-react";
 import type { Transaction, TransactionDetail } from "@workspace/api-client-react";
 
 const STATUS_CONFIG = {
@@ -40,7 +40,16 @@ function TransactionDetailView({ id, onClose }: { id: number; onClose: () => voi
   const sym = settings?.currencySymbol ?? "Rp";
   const fmt = (n: number) => `${sym} ${Math.round(n).toLocaleString("id-ID")}`;
   const { data: tx, isLoading } = useGetTransaction(id);
-  const [showReceipt, setShowReceipt] = useState(false);
+  const { printTicket } = usePrintTicket();
+  const [printing, setPrinting] = useState<string | null>(null);
+
+  async function doPrint(type: PrintType) {
+    if (!tx) return;
+    setPrinting(type);
+    printTicket(type, tx);
+    await new Promise(r => setTimeout(r, 800));
+    setPrinting(null);
+  }
 
   if (isLoading) return <div className="py-8 text-center text-muted-foreground animate-pulse">Loading…</div>;
   if (!tx) return null;
@@ -108,15 +117,38 @@ function TransactionDetailView({ id, onClose }: { id: number; onClose: () => voi
       )}
 
       {tx.status === "paid" && (
-        <Button variant="outline" className="w-full gap-1.5" onClick={() => setShowReceipt(true)}>
-          <Receipt className="h-4 w-4" />
-          Print Receipt
-        </Button>
+        <div className="space-y-2">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Print</p>
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => doPrint("receipt")} disabled={printing !== null}>
+              <Receipt className="h-3.5 w-3.5" />Receipt
+            </Button>
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => doPrint("waiter_copy")} disabled={printing !== null}>
+              <Users className="h-3.5 w-3.5" />Waiter Copy
+            </Button>
+            {tx.items.some(i => i.productionStation === "bar" || i.productionStation === "both") && (
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => doPrint("bar_ticket")} disabled={printing !== null}>
+                <Coffee className="h-3.5 w-3.5" />Bar Ticket
+              </Button>
+            )}
+            {tx.items.some(i => i.productionStation === "kitchen" || i.productionStation === "both") && (
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs" onClick={() => doPrint("kitchen_ticket")} disabled={printing !== null}>
+                <ChefHat className="h-3.5 w-3.5" />Kitchen Ticket
+              </Button>
+            )}
+            <Button size="sm" className="gap-1.5 text-xs col-span-2" onClick={async () => {
+              await doPrint("receipt");
+              if (tx.items.some(i => i.productionStation === "bar" || i.productionStation === "both")) await doPrint("bar_ticket");
+              if (tx.items.some(i => i.productionStation === "kitchen" || i.productionStation === "both")) await doPrint("kitchen_ticket");
+              await doPrint("waiter_copy");
+            }} disabled={printing !== null}>
+              <Printer className="h-3.5 w-3.5" />Print All
+            </Button>
+          </div>
+        </div>
       )}
 
-      {showReceipt && (
-        <ReceiptModal open={showReceipt} onClose={() => setShowReceipt(false)} transaction={tx} />
-      )}
+      {tx && <PrintTicketsContainer transaction={tx} />}
     </div>
   );
 }

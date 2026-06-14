@@ -1,2 +1,3 @@
 - [POS Transaction Flow](pos-transaction-flow.md) — createTransaction then payTransaction separately; stock deducted on pay; table freed on pay or void
 - [Generated Hook Signatures](generated-hook-signatures.md) — Orval mutations use `{ data: Body }` or `{ id, data: Body }` shape, never direct spread
+- [Multi-Printer System](multi-printer-system.md) — browser-based printing with CSS isolation; print logs at /api/print-logs; printer_settings/print_logs/kds_orders tables in SQLite

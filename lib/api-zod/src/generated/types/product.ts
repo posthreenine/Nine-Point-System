@@ -21,6 +21,7 @@ export interface Product {
   imageUrl?: string | null;
   status: ProductStatus;
   hpp: number;
+  productionStation: string;
   createdAt: string;
   updatedAt: string;
 }

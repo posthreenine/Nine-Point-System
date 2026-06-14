@@ -21,6 +21,13 @@ import * as z from "zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Search, MoreHorizontal, Pencil, Trash2, ImagePlus, ImageOff, Package } from "lucide-react";
 
+const PRODUCTION_STATIONS = [
+  { value: "none", label: "None" },
+  { value: "bar", label: "Bar" },
+  { value: "kitchen", label: "Kitchen" },
+  { value: "both", label: "Both (Bar & Kitchen)" },
+] as const;
+
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
   code: z.string().min(1, "Code is required"),
@@ -28,6 +35,7 @@ const schema = z.object({
   description: z.string().optional(),
   sellingPrice: z.coerce.number().min(0, "Price must be ≥ 0"),
   status: z.enum(["active", "inactive"]).default("active"),
+  productionStation: z.enum(["bar", "kitchen", "both", "none"]).default("none"),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -50,7 +58,7 @@ export default function ProductsPage() {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { name: "", code: "", categoryId: 0, description: "", sellingPrice: 0, status: "active" },
+    defaultValues: { name: "", code: "", categoryId: 0, description: "", sellingPrice: 0, status: "active", productionStation: "none" },
   });
 
   const filtered = products.filter(p =>
@@ -69,6 +77,7 @@ export default function ProductsPage() {
       name: item.name, code: item.code, categoryId: item.categoryId,
       description: item.description ?? "", sellingPrice: item.sellingPrice,
       status: item.status as "active" | "inactive",
+      productionStation: (item.productionStation ?? "none") as "bar" | "kitchen" | "both" | "none",
     });
     setEditingItem(item);
   }
@@ -171,6 +180,17 @@ export default function ProductsPage() {
                 <SelectContent>
                   <SelectItem value="active">Active</SelectItem>
                   <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select><FormMessage /></FormItem>
+          )} />
+          <FormField control={form.control} name="productionStation" render={({ field }) => (
+            <FormItem><FormLabel>Production Station</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                <SelectContent>
+                  {PRODUCTION_STATIONS.map(s => (
+                    <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select><FormMessage /></FormItem>
           )} />

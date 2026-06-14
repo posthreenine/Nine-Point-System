@@ -59,16 +59,20 @@ function fmtTransactionDetail(t: any) {
 
   return {
     ...base,
-    items: items.map(i => ({
-      id: i.id,
-      productId: i.product_id,
-      productName: i.product_name,
-      productCode: i.product_code,
-      quantity: i.quantity,
-      unitPrice: i.unit_price,
-      subtotal: i.subtotal,
-      notes: i.notes ?? null,
-    })),
+    items: items.map(i => {
+      const prod = db.prepare("SELECT production_station FROM products WHERE id = ?").get(i.product_id) as { production_station: string } | undefined;
+      return {
+        id: i.id,
+        productId: i.product_id,
+        productName: i.product_name,
+        productCode: i.product_code,
+        quantity: i.quantity,
+        unitPrice: i.unit_price,
+        subtotal: i.subtotal,
+        notes: i.notes ?? null,
+        productionStation: prod?.production_station ?? "none",
+      };
+    }),
     payment: payment ? {
       id: payment.id,
       paymentMethod: payment.payment_method,

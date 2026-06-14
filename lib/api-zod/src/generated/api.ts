@@ -432,7 +432,8 @@ export const CreateProductBody = zod.object({
   "categoryId": zod.number(),
   "description": zod.string().optional(),
   "sellingPrice": zod.number(),
-  "status": zod.enum(['active', 'inactive']).optional()
+  "status": zod.enum(['active', 'inactive']).optional(),
+  "productionStation": zod.enum(['bar', 'kitchen', 'both', 'none']).optional()
 })
 
 
@@ -472,7 +473,8 @@ export const UpdateProductBody = zod.object({
   "categoryId": zod.number().optional(),
   "description": zod.string().optional(),
   "sellingPrice": zod.number().optional(),
-  "status": zod.enum(['active', 'inactive']).optional()
+  "status": zod.enum(['active', 'inactive']).optional(),
+  "productionStation": zod.enum(['bar', 'kitchen', 'both', 'none']).optional()
 })
 
 export const UpdateProductResponse = zod.object({

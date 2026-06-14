@@ -43,6 +43,7 @@ function fmt(r: any) {
     description: r.description ?? null, sellingPrice: r.selling_price,
     imageUrl: r.image ? `/api/products/image-file/${r.image}` : null,
     status: r.status, hpp: computeHpp(r.id),
+    productionStation: r.production_station ?? "none",
     createdAt: r.created_at, updatedAt: r.updated_at,
   };
 }
@@ -58,14 +59,14 @@ router.get("/products", requireAuth, async (_req, res): Promise<void> => {
 router.post("/products", requireAuth, async (req, res): Promise<void> => {
   const parsed = CreateProductBody.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: parsed.error.message }); return; }
-  const { name, code, categoryId, description, sellingPrice, status } = parsed.data;
+  const { name, code, categoryId, description, sellingPrice, status, productionStation } = parsed.data as any;
   if (db.prepare("SELECT id FROM products WHERE code = ?").get(code)) {
     res.status(400).json({ error: "Product code already exists" }); return;
   }
   if (!db.prepare("SELECT id FROM categories WHERE id = ?").get(categoryId)) {
     res.status(400).json({ error: "Category not found" }); return;
   }
-  const result = db.prepare("INSERT INTO products (name, code, category_id, description, selling_price, status) VALUES (?, ?, ?, ?, ?, ?)").run(name, code, categoryId, description ?? null, sellingPrice, status ?? "active");
+  const result = db.prepare("INSERT INTO products (name, code, category_id, description, selling_price, status, production_station) VALUES (?, ?, ?, ?, ?, ?, ?)").run(name, code, categoryId, description ?? null, sellingPrice, status ?? "active", productionStation ?? "none");
   const row = db.prepare("SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.id = ?").get(result.lastInsertRowid) as any;
   res.status(201).json(fmt(row));
 });
@@ -86,13 +87,13 @@ router.patch("/products/:id", requireAuth, async (req, res): Promise<void> => {
   if (!db.prepare("SELECT id FROM products WHERE id = ?").get(params.data.id)) {
     res.status(404).json({ error: "Product not found" }); return;
   }
-  const { name, code, categoryId, description, sellingPrice, status } = parsed.data;
+  const { name, code, categoryId, description, sellingPrice, status, productionStation } = parsed.data as any;
   if (code) {
     const conflict = db.prepare("SELECT id FROM products WHERE code = ? AND id != ?").get(code, params.data.id);
     if (conflict) { res.status(400).json({ error: "Product code already taken" }); return; }
   }
-  db.prepare(`UPDATE products SET name = COALESCE(?, name), code = COALESCE(?, code), category_id = COALESCE(?, category_id), description = COALESCE(?, description), selling_price = COALESCE(?, selling_price), status = COALESCE(?, status), updated_at = datetime('now') WHERE id = ?`)
-    .run(name ?? null, code ?? null, categoryId ?? null, description !== undefined ? description : null, sellingPrice ?? null, status ?? null, params.data.id);
+  db.prepare(`UPDATE products SET name = COALESCE(?, name), code = COALESCE(?, code), category_id = COALESCE(?, category_id), description = COALESCE(?, description), selling_price = COALESCE(?, selling_price), status = COALESCE(?, status), production_station = COALESCE(?, production_station), updated_at = datetime('now') WHERE id = ?`)
+    .run(name ?? null, code ?? null, categoryId ?? null, description !== undefined ? description : null, sellingPrice ?? null, status ?? null, productionStation ?? null, params.data.id);
   const row = db.prepare("SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON c.id = p.category_id WHERE p.id = ?").get(params.data.id) as any;
   res.json(fmt(row));
 });

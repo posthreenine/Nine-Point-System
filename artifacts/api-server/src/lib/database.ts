@@ -21,6 +21,43 @@ db.pragma("journal_mode = WAL");
 db.pragma("foreign_keys = ON");
 
 function initDatabase(): void {
+  // Migrations for new columns
+  try { db.exec("ALTER TABLE products ADD COLUMN production_station TEXT NOT NULL DEFAULT 'none'"); } catch (_) { /* already exists */ }
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS printer_settings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      printer_type TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL DEFAULT '',
+      device_name TEXT,
+      ip_address TEXT,
+      port INTEGER,
+      is_active INTEGER NOT NULL DEFAULT 1,
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS print_logs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      transaction_id INTEGER NOT NULL REFERENCES transactions(id),
+      invoice_number TEXT NOT NULL,
+      print_type TEXT NOT NULL,
+      printer_name TEXT,
+      user_id INTEGER NOT NULL REFERENCES users(id),
+      printed_at TEXT NOT NULL DEFAULT (datetime('now')),
+      reprint_count INTEGER NOT NULL DEFAULT 0
+    );
+
+    CREATE TABLE IF NOT EXISTS kds_orders (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      transaction_id INTEGER NOT NULL REFERENCES transactions(id),
+      invoice_number TEXT NOT NULL,
+      station TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `);
+
   db.exec(`
     CREATE TABLE IF NOT EXISTS roles (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -206,6 +243,7 @@ function initDatabase(): void {
   seedRecipes();
   seedTables();
   seedQrisSettings();
+  seedPrinterSettings();
 }
 
 function seedRoles() {
@@ -355,6 +393,16 @@ function seedQrisSettings() {
   if (count > 0) return;
   db.prepare("INSERT INTO qris_settings (merchant_name) VALUES (?)").run("THREE NINE COFFEE & EATERY");
   logger.info("Seeded QRIS settings");
+}
+
+function seedPrinterSettings() {
+  const count = (db.prepare("SELECT COUNT(*) as c FROM printer_settings").get() as { c: number }).c;
+  if (count > 0) return;
+  const ins = db.prepare("INSERT INTO printer_settings (printer_type, name) VALUES (?, ?)");
+  ins.run("customer", "Customer Printer");
+  ins.run("bar", "Bar Printer");
+  ins.run("kitchen", "Kitchen Printer");
+  logger.info("Seeded default printer settings");
 }
 
 initDatabase();

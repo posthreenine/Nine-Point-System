@@ -14,4 +14,5 @@ export interface ProductUpdate {
   description?: string;
   sellingPrice?: number;
   status?: ProductUpdateStatus;
+  productionStation?: string;
 }

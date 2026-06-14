@@ -8,7 +8,7 @@ import {
   Settings, ChevronDown, ChevronRight, Store, Layers,
   Package, FlaskConical, Warehouse, ClipboardList, ChefHat,
   BarChart3, TrendingUp, ShoppingCart, Table2, Receipt, QrCode,
-  Clock, CalendarDays, Calendar, ShoppingBag, PieChart,
+  Clock, CalendarDays, Calendar, ShoppingBag, PieChart, Printer,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -88,6 +88,7 @@ export function Layout({ children }: LayoutProps) {
   const adminLinks = [
     { href: "/admin/store-settings", label: "Store Settings", icon: Store },
     { href: "/admin/qris-settings", label: "QRIS Settings", icon: QrCode },
+    { href: "/admin/printer-management", label: "Printer Management", icon: Printer },
   ];
 
   const CollapsibleGroup = ({ groupKey, icon: GroupIcon, label, links, onNavigate }: {
