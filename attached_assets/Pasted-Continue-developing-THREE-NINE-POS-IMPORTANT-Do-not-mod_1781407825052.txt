@@ -1,0 +1,266 @@
+Continue developing THREE NINE POS.
+
+IMPORTANT:
+Do not modify or break existing modules:
+- Authentication
+- User Roles
+- Dashboard
+- Store Settings
+
+Integrate all new modules with existing database and UI.
+
+Create the following modules completely:
+
+1. Product Categories
+2. Product Management
+3. Inventory Management
+4. Ingredients Management
+5. HPP Management
+6. Recipe Management
+
+DATABASE TABLES
+
+categories
+products
+ingredients
+recipes
+recipe_items
+stock_movements
+
+CATEGORY MANAGEMENT
+
+Fields:
+- id
+- name
+- description
+- status
+- created_at
+- updated_at
+
+Default Categories:
+
+Coffee
+Non Coffee
+Tea
+Pizza
+Food
+Dessert
+Mocktail
+
+Features:
+- Add
+- Edit
+- Delete
+- Search
+- Filter
+- Active/Inactive
+
+PRODUCT MANAGEMENT
+
+Fields:
+
+- Product Name
+- Product Code
+- Category
+- Description
+- Selling Price
+- Product Image
+- Status
+
+Features:
+
+- Add Product
+- Edit Product
+- Delete Product
+- Search Product
+- Filter Product
+- Upload Product Image
+- Product Detail Page
+
+Sample Products:
+
+Coffee:
+- Espresso
+- Americano
+- Cappuccino
+- Cafe Latte
+
+Pizza:
+- All Cheese Pizza
+- Bacon Crushed Egg Pizza
+- Mushroom Delight Pizza
+- Tropical Chicken Pizza
+- Sei Beef Pizza
+
+Food:
+- Soto Betawi
+- Soup Iga
+- Soup Iga Bakar
+
+Dessert:
+- Churros
+
+Mocktail:
+- Mojito
+
+INGREDIENT MANAGEMENT
+
+Fields:
+
+- Ingredient Name
+- Unit
+- Purchase Price
+- Current Stock
+- Minimum Stock
+
+Units:
+
+- Gram
+- Kg
+- Ml
+- Liter
+- Pcs
+
+Features:
+
+- Add Ingredient
+- Edit Ingredient
+- Delete Ingredient
+- Search Ingredient
+
+INVENTORY MANAGEMENT
+
+Features:
+
+- Stock In
+- Stock Out
+- Stock Adjustment
+- Stock Opname
+
+Stock Movement History:
+
+- Date
+- Ingredient
+- Quantity
+- User
+- Notes
+
+Display:
+
+- Current Stock
+- Low Stock
+- Out Of Stock
+
+RECIPE MANAGEMENT
+
+Each product can contain multiple ingredients.
+
+Example:
+
+Cafe Latte
+
+- Coffee Beans 18g
+- Milk 150ml
+
+Example:
+
+Mojito
+
+- Mint Leaves
+- Lime
+- Syrup
+- Soda Water
+
+HPP MANAGEMENT
+
+Automatically calculate:
+
+Total HPP
+
+Formula:
+
+Ingredient Cost × Quantity Used
+
+Show:
+
+- HPP
+- Selling Price
+- Profit
+- Margin Percentage
+
+Create Profit Analysis Page.
+
+SIDEBAR MENU
+
+Products
+ ├ Categories
+ ├ Products
+ ├ Ingredients
+ ├ Recipes
+
+Inventory
+ ├ Stock Management
+ ├ Stock Movements
+
+Reports
+ ├ Profit Analysis
+
+ROLE PERMISSIONS
+
+Owner:
+Full Access
+
+Manager:
+Full Access
+
+Cashier:
+View Products Only
+
+Kitchen:
+View Recipes Only
+
+UI REQUIREMENTS
+
+Use existing Tailwind CSS design.
+
+Create:
+
+- Modern Tables
+- Responsive Forms
+- Search Bar
+- Filters
+- Pagination
+- Success Notifications
+- Error Notifications
+
+DATABASE
+
+Use SQLite.
+
+Create migrations automatically.
+
+API REQUIREMENTS
+
+Generate complete REST API for all modules.
+
+VALIDATION
+
+Prevent duplicate categories.
+
+Prevent duplicate product codes.
+
+Prevent negative stock.
+
+TESTING
+
+Before finishing:
+
+- Verify all database tables exist
+- Verify all CRUD operations work
+- Verify image upload works
+- Verify HPP calculation works
+- Verify role permissions work
+- Verify responsive layout works
+- Fix all build errors automatically
+
+Generate complete backend, frontend, SQLite schema, migrations, API routes, controllers, validation, and responsive UI.
